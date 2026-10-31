@@ -1,0 +1,106 @@
+# Hausi - a trophy of the wrong biome does nothing at all: no rolls, and no block either. The block
+# is the price of a matching bonus, not of wearing a trophy. The Draugr is a Swamp creature.
+
+clear
+god
+ghost
+give TrophyDraugr:1
+mod hausi wear TrophyDraugr
+wait 2
+mod hausi
+printed biome=swamp yes
+sweep
+mod hausi stats reset
+
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+wait 8
+mod hausi stats
+printed units=0 extras=0 yes
+dropped TrophyBoar 1+
+mod hausi last
+printed last=Boar yes
+printed worn=TrophyDraugr yes
+printed wornbiome=swamp yes
+printed chance=0 yes
+sweep
+mod hausi wear TrophyDraugr
+wait 2

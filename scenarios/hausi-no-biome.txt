@@ -1,0 +1,51 @@
+# Hausi - no biome on either side. A Greyling drops no trophy, so it has no biome, and a matching
+# trophy gets nothing from it. And `none` must not match `none`: a trophy the tables cannot place,
+# worn against a creature they cannot place, is still no bonus. TrophySkeletonHildir is one of the
+# location-only trophies, listed by `hausi sets` under nobiome.
+
+clear
+god
+ghost
+give TrophyBoar:1
+give TrophySkeletonHildir:1
+mod hausi wear TrophyBoar
+wait 2
+sweep
+mod hausi stats reset
+spawn Greyling
+kill Greyling 12
+wait 6
+mod hausi stats
+printed units=0 yes
+mod hausi last
+printed last=Greyling yes
+printed creaturebiome=none yes
+printed chance=0 yes
+printed blocked=none yes
+
+mod hausi wear TrophySkeletonHildir
+wait 2
+mod hausi
+printed worn=TrophySkeletonHildir yes
+printed biome=none yes
+spawn Greyling
+kill Greyling 12
+wait 6
+mod hausi stats
+printed units=0 yes
+mod hausi last
+printed wornbiome=none yes
+printed creaturebiome=none yes
+printed chance=0 yes
+spawn Boar
+kill Boar 12
+wait 6
+mod hausi stats
+printed units=0 yes
+mod hausi last
+printed last=Boar yes
+printed wornbiome=none yes
+printed blocked=none yes
+sweep
+mod hausi wear TrophySkeletonHildir
+wait 2

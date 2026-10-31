@@ -1,0 +1,26 @@
+#! nostage
+# Hausi - a worn stack spent at an altar. OfferingBowl takes trophies by name through
+# Inventory.RemoveItem, so nobody unequips anything and the last of the stack simply stops being in
+# the pack. The slot must notice, or it would go on publishing a bonus for a thing that is gone.
+
+clear
+god
+ghost
+location Eikthyrnir
+wait 3
+banish Eikthyr 80
+give TrophyDeer:2
+wait 1
+mod hausi wear TrophyDeer
+wait 2
+mod hausi
+printed worn=TrophyDeer yes
+offer TrophyDeer
+wait 2
+carrying TrophyDeer 0
+mod hausi
+printed worn=none yes
+printed published=no yes
+printed marks=0 yes
+wait 18
+banish Eikthyr 80

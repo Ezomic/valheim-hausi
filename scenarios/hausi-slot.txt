@@ -1,0 +1,63 @@
+# Hausi - the slot itself: on, off, swapped, stacked, dropped.
+#
+# `hausi wear` is Humanoid.UseItem(inventory, item, fromInventoryGui: true), the call the inventory's
+# right click makes, so this goes through ToggleEquipped and vanilla's equip action queue. What it
+# cannot see is the click reaching that call, and the checkmark being drawn. `marked` reads the
+# m_equipped the grid draws from; the mark itself is in the hand steps in the PR.
+#
+# "worn" comes from the slot and "published" from the player's own ZDO, which is what other machines
+# read, so a slot that works locally and tells nobody fails here.
+
+clear
+god
+ghost
+give TrophyBoar:5
+give TrophyDeer:1
+wait 1
+
+mod hausi
+printed worn=none yes
+printed published=no yes
+
+# On. A stack of five is worn whole.
+mod hausi wear TrophyBoar
+wait 2
+mod hausi
+printed worn=TrophyBoar yes
+printed stack=5 yes
+printed marked=yes yes
+printed marks=1 yes
+printed published=yes yes
+printed biome=meadows yes
+mod hausi look
+printed look.self=Hips renderers=2 longest=0.24 yes
+wait 2
+screenshot
+
+# Another trophy takes its place, and there is never a second mark.
+mod hausi wear TrophyDeer
+wait 2
+mod hausi
+printed worn=TrophyDeer yes
+printed marks=1 yes
+
+# The same one again takes it off, and the model goes with it.
+mod hausi wear TrophyDeer
+wait 2
+mod hausi
+printed worn=none yes
+printed marks=0 yes
+printed published=no yes
+mod hausi look
+printed look.self=none yes
+
+# Dropping a worn stack takes it off.
+mod hausi wear TrophyBoar
+wait 2
+drop TrophyBoar
+wait 1
+mod hausi
+printed worn=none yes
+printed marks=0 yes
+carrying TrophyBoar 0
+sweep

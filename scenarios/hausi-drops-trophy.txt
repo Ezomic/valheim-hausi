@@ -1,0 +1,121 @@
+# Hausi - a matching trophy: more of everything except the trophy, which never drops.
+#
+# The numbers are read two ways on purpose. The ledger (`hausi last`, `hausi stats`) says what the
+# code decided. `dropped` counts ItemDrops lying on the ground, which nothing in Hausi wrote. A boost
+# the ledger claims and the ground does not show fails `dropped $meat`.
+#
+# 40 Boars at about 2 units each is around 80 rolls at 25%, so the ratio has a standard deviation of
+# about 0.05. The band below is three of them each way: a chance near 1 in 300 of a false failure,
+# and 0, 0.5 and 1 all fail it.
+
+clear
+god
+ghost
+give TrophyBoar:1
+mod hausi wear TrophyBoar
+wait 2
+sweep
+mod hausi stats reset
+
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+wait 8
+mod hausi stats within 0.10 0.40
+printed within=yes yes
+dropped TrophyBoar 0
+
+# One kill checked against the ground.
+sweep
+wait 1
+spawn Boar
+kill Boar 12
+wait 8
+mod hausi last
+printed last=Boar yes
+printed chance=0.25 yes
+printed creaturebiome=meadows yes
+note meat drop.RawMeat base=[0-9]+ extra=[0-9]+ total=([0-9]+)
+note scraps drop.LeatherScraps base=[0-9]+ extra=[0-9]+ total=([0-9]+)
+dropped RawMeat $meat
+dropped LeatherScraps $scraps
+sweep
+mod hausi wear TrophyBoar
+wait 2

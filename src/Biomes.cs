@@ -59,6 +59,7 @@ namespace Hausi
         {
             BiomeIndex.Invalidate();
             _sets = null;
+            Generation++;
             _nextTry = 0f;
             Creatures.Clear();
         }
@@ -85,6 +86,9 @@ namespace Hausi
             BiomeIndex.Prepare();
             if (BiomeIndex.Complete) _sets = BuildSets();
         }
+
+        /// <summary>Moves whenever the sets are thrown away, so a recipe knows it is out of date.</summary>
+        internal static int Generation;
 
         internal static bool Ready
         {
@@ -206,7 +210,7 @@ namespace Hausi
         }
 
         /// <summary>The biome a boss key belongs to in BossBiomes, or null. BiomeIndex asks this too.</summary>
-        private static string BiomeOfBossKey(string key)
+        internal static string BiomeOfBossKey(string key)
         {
             if (string.IsNullOrEmpty(key)) return null;
 

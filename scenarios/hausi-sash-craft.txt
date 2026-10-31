@@ -1,0 +1,257 @@
+# Hausi - the sash from nothing: refused with a trophy missing, made from the whole set, worn,
+# upgraded with its relic and material, and then a true double.
+#
+# Meadows, because its set is the smallest and is the one written here: Boar, Deer, Neck and Eikthyr.
+# Reading them off `hausi sets` first means a change in what the tables say fails at the first step
+# rather than as a confusing refusal at the bench.
+#
+# The double is checked on the ground as well as in the ledger. At a chance of 1 every unit gets one
+# more, so the ground holds exactly what the ledger totals, and extra equals base for every item.
+
+clear
+god
+ghost
+mod hausi sets
+printed set.meadows boss=TrophyEikthyr count=4 trophies=TrophyBoar,TrophyDeer,TrophyEikthyr,TrophyNeck yes
+
+# The shed from vaettir-jib-gate, captured off one built by hand, because CraftingStation.CheckUsable
+# refuses a bench with no roof. Plus an extension, because an upgrade wants a level 2 bench.
+place wood_beam 3.2 1.0 5 0.01
+place wood_beam 3.4 -1.0 -174 0.00
+place wood_floor 4.2 1.1 -174 0.02
+place wood_floor 4.4 -0.9 -174 0.03
+place wood_beam 4.1 2.1 -84 0.00
+place wood_beam 4.5 -1.9 -84 0.03
+place wood_beam 5.2 1.2 -174 0.00
+place wood_beam 5.4 -0.8 -174 0.06
+place piece_workbench 4.6 0.1 -174 0.10
+place wood_pole2 3.1 2.0 5 1.04
+place wood_pole2 3.5 -2.0 5 1.00
+place woodwall 4.1 2.1 96 1.00
+place woodwall 4.5 -1.9 -84 1.03
+place woodwall 5.2 1.2 5 1.00
+place woodwall 5.4 -0.8 5 1.06
+place wood_pole2 5.1 2.2 5 1.01
+place wood_pole2 5.5 -1.8 5 1.07
+place wood_roof_ocorner_45 4.2 1.1 5 2.02
+place wood_roof_ocorner_45 4.4 -0.9 -84 2.03
+place wood_beam 4.1 2.1 95 2.00
+place wood_beam 4.5 -1.9 -84 2.03
+place wood_beam 5.2 1.2 5 2.00
+place wood_beam 5.4 -0.8 5 2.06
+place wood_beam_45 3.2 1.0 -174 3.01
+place wood_beam_45 3.4 -1.0 6 3.00
+place piece_workbench_ext1 7.2 0.2 -90 0
+wait 2
+goto piece_workbench
+give TrophyBoar:1
+give TrophyDeer:1
+give TrophyNeck:1
+wait 1
+use piece_workbench
+wait 1
+
+# One short: the boss's trophy.
+craftable HausiSash_Meadows no
+close
+wait 1
+
+give TrophyEikthyr:1
+wait 1
+use piece_workbench
+wait 2
+craftable HausiSash_Meadows yes
+craft HausiSash_Meadows
+wait 5
+carrying HausiSash_Meadows 1
+carrying TrophyBoar 0
+carrying TrophyDeer 0
+carrying TrophyNeck 0
+carrying TrophyEikthyr 0
+close
+wait 1
+
+# Worn at quality 1: the middle tier.
+mod hausi wear HausiSash_Meadows
+wait 2
+mod hausi
+printed worn=HausiSash_Meadows yes
+printed biome=meadows yes
+printed published=yes yes
+mod hausi look
+printed look.self=Spine2 yes
+screenshot
+sweep
+mod hausi stats reset
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+wait 8
+mod hausi stats within 0.33 0.67
+printed within=yes yes
+dropped TrophyBoar 0
+spawn Boar
+kill Boar 12
+wait 6
+mod hausi last
+printed chance=0.5 yes
+sweep
+
+# The upgrade, off the body, with nothing but what it costs.
+mod hausi wear HausiSash_Meadows
+wait 2
+give HausiRelic_Meadows:1
+give DeerHide:20
+wait 1
+use piece_workbench
+wait 2
+press Upgrade
+wait 2
+craft HausiSash_Meadows
+wait 5
+close
+wait 1
+carrying HausiRelic_Meadows 0
+carrying DeerHide 0
+carrying HausiSash_Meadows 1
+
+mod hausi wear HausiSash_Meadows
+wait 2
+mod hausi
+printed worn=HausiSash_Meadows yes
+sweep
+mod hausi stats reset
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+wait 8
+mod hausi stats
+printed ratio=1.000 yes
+dropped TrophyBoar 0
+sweep
+wait 1
+spawn Boar
+kill Boar 12
+wait 8
+mod hausi last
+printed chance=1 yes
+note meat drop.RawMeat base=[0-9]+ extra=[0-9]+ total=([0-9]+)
+dropped RawMeat $meat
+sweep
+mod hausi wear HausiSash_Meadows
+wait 2
+clear

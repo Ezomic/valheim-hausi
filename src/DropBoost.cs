@@ -76,6 +76,8 @@ namespace Hausi
             // answer. Only a real death spends a roll.
             if (character == null || !character.IsDead()) return;
 
+            int relicAt = AddRelic(character, list);
+
             HitData hit = LastHit(character);
             if (hit == null || hit.m_attacker.IsNone()) return;
 
@@ -112,7 +114,7 @@ namespace Hausi
             for (int i = list.Count - 1; i >= 0; i--)
             {
                 ItemDrop item;
-                if (list[i].Key == null || !list[i].Key.TryGetComponent(out item)) continue;
+                if (i == relicAt || list[i].Key == null || !list[i].Key.TryGetComponent(out item)) continue;
 
                 string name = list[i].Key.name;
                 int count = list[i].Value;
@@ -132,6 +134,24 @@ namespace Hausi
             }
 
             Say(decision);
+        }
+
+        /// <summary>
+        /// One relic from a boss Vandi says was summoned harder, whoever struck the last blow: the fight
+        /// earned it, and the block and the bonus are about the blow. Its index comes back so the boost
+        /// leaves it out, because it is one relic per fight and a sash that could double it would pay
+        /// for its own upgrade. Before the trophy block's removals, which only ever move it down by
+        /// indices it has already been compared against, since that loop walks from the end.
+        /// </summary>
+        private static int AddRelic(Character character, List<KeyValuePair<GameObject, int>> list)
+        {
+            if (!character.IsBoss() || !VandiLink.IsHarderSummon(character)) return -1;
+
+            GameObject relic = Sashes.RelicOf(Biomes.BiomeOfBossKey(character.m_defeatSetGlobalKey));
+            if (relic == null) return -1;
+
+            list.Add(new KeyValuePair<GameObject, int>(relic, 1));
+            return list.Count - 1;
         }
 
         /// <summary>

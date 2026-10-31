@@ -66,6 +66,7 @@ namespace Hausi
 
             Prefabs.Log = Log;
             Biomes.Wire();
+            Sashes.Keep();
 
             // PatchAll over named types, never the whole assembly. A bare PatchAll() walks
             // every type in the DLL, so a half-written patch class in another file goes live
@@ -74,6 +75,7 @@ namespace Hausi
             _harmony.PatchAll(typeof(Slot));
             _harmony.PatchAll(typeof(DropBoost));
             _harmony.PatchAll(typeof(Worn));
+            _harmony.PatchAll(typeof(Altar));
             _harmony.PatchAll(typeof(DevConsole));
 
             // The startup line every mod in the suite writes. It is how a log answers "which
@@ -85,6 +87,7 @@ namespace Hausi
         {
             Prefabs.Tick();
             Biomes.Tick();
+            Sashes.Tick();
             Slot.Tick();
         }
 

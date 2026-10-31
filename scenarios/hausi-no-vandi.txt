@@ -1,0 +1,71 @@
+#! nostage
+# Hausi - with no Vandi, or a Vandi without AskHarder. The offering is unavailable and nothing else is:
+# the same altar in the same sash gives a plain boss and no relic, and the slot still boosts.
+
+clear
+god
+ghost
+location Eikthyrnir
+wait 3
+banish Eikthyr 80
+sweep
+give HausiSash_Meadows:1
+give TrophyDeer:2
+mod hausi wear HausiSash_Meadows
+wait 2
+mod hausi
+printed worn=HausiSash_Meadows yes
+offer TrophyDeer
+wait 20
+level Eikthyr 1
+kill Eikthyr
+wait 8
+dropped HausiRelic_Meadows 0
+mod hausi stats reset
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+wait 4
+mod hausi stats within 0.25 0.75
+printed within=yes yes
+sweep
+mod hausi wear HausiSash_Meadows
+wait 2
+clear

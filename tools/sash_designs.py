@@ -89,6 +89,7 @@ def torso_points():
     # Everything past the shoulder is an arm, standing straight out in the bind pose and hanging at
     # the side in play, so it must not push a strap outwards.
     _torso = [p for p in world if abs(p.x) < 0.30 and (abs(p.x) < 0.26 or p.z > 1.42)]
+    clear_scene()
     return _torso
 
 
@@ -211,11 +212,11 @@ def antler(at, mat):
     taper(0.012, 0.004, 0.06, (x - 0.008, y, z + 0.08), mat, sides=7, rot_y=-32.0, tilt=2.0)
 
 
-def baldric():
+def baldric(token=antler):
     strap, centre, u, v, normal, radii = band((-0.19, 0.0, 1.56), (0.17, 0.0, 1.0), 0.075, 0.012, "cloth")
     chest = out_at(centre, u, v, radii, 0.33 * math.pi, 0.012)
     disc(0.05, 0.022, tuple(chest), "bone", sides=13)
-    antler((chest.x, chest.y + 0.02, chest.z - 0.05), "bone")
+    token((chest.x, chest.y + 0.02, chest.z - 0.05), "bone")
     side = out_at(centre, u, v, radii, math.pi, 0.0)
     tail((side.x + 0.02, side.y, side.z), 0.24, 0.06, "cloth", lean_x=8.0)
     tail((side.x - 0.04, side.y + 0.03, side.z), 0.18, 0.055, "cloth", lean_x=-6.0)
@@ -278,7 +279,6 @@ def body():
         obj.data.materials.append(material("skin"))
         for poly in obj.data.polygons:
             poly.use_smooth = True
-        obj.hide_select = True
         obj.name = "body"
         return obj
 
@@ -365,7 +365,8 @@ def build(name):
     shoot(name, "back", -1)
 
 
-os.makedirs(OUT, exist_ok=True)
-torso_points()
-for design in DESIGNS:
-    build(design)
+if __name__ == "__main__" and "sash_build" not in " ".join(sys.argv):
+    os.makedirs(OUT, exist_ok=True)
+    torso_points()
+    for design in DESIGNS:
+        build(design)

@@ -1,0 +1,71 @@
+#! nostage
+# Hausi - offering at a boss's altar in that biome's sash. NEEDS a Vandi with AskHarder and
+# IsHarderSummon. hausi-no-vandi is the same altar without them.
+#
+# What it proves: the boss comes one star above the record, because Vandi was asked and Vandi's stars
+# are the only difficulty there is. It drops one relic, not doubled by the very sash that asked for
+# it. The sash is not consumed. An offering without the sash, or in the wrong biome's, asks for
+# nothing and gets no relic, and the record is still Vandi's own.
+
+clear
+god
+ghost
+unkey vandi_p_$player_defeated_eikthyr
+unkey vandi_harder_defeated_eikthyr
+wait 1
+location Eikthyrnir
+wait 3
+banish Eikthyr 80
+sweep
+
+# In the sash, no kills on record: a plain Eikthyr would be level 1.
+give HausiSash_Meadows:1
+give TrophyDeer:2
+mod hausi wear HausiSash_Meadows
+wait 2
+offer TrophyDeer
+wait 20
+level Eikthyr 2
+carrying HausiSash_Meadows 1
+kill Eikthyr
+wait 8
+dropped HausiRelic_Meadows 1
+dropped TrophyEikthyr 0
+mod hausi last
+printed last=Eikthyr yes
+printed chance=0.5 yes
+keyis vandi_p_$player_defeated_eikthyr 1
+sweep
+wait 1
+
+# Taken off: one kill on record is one star, level 2, and no relic.
+mod hausi wear HausiSash_Meadows
+wait 2
+give TrophyDeer:2
+offer TrophyDeer
+wait 20
+level Eikthyr 2
+kill Eikthyr
+wait 8
+dropped HausiRelic_Meadows 0
+keyis vandi_p_$player_defeated_eikthyr 2
+sweep
+wait 1
+
+# The wrong biome's sash asks for nothing: two kills is two stars, level 3, and no relic of any kind.
+give HausiSash_Swamp:1
+give TrophyDeer:2
+mod hausi wear HausiSash_Swamp
+wait 2
+offer TrophyDeer
+wait 20
+level Eikthyr 3
+kill Eikthyr
+wait 8
+dropped HausiRelic_Meadows 0
+dropped HausiRelic_Swamp 0
+sweep
+mod hausi wear HausiSash_Swamp
+wait 2
+unkey vandi_p_$player_defeated_eikthyr
+clear

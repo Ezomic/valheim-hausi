@@ -17,7 +17,8 @@ namespace Hausi
     {
         internal static ConfigEntry<bool> Enabled;
         internal static ConfigEntry<float> TrophyChance, SashChance, UpgradedChance;
-        internal static ConfigEntry<string> BossBiomes, BiomeOverrides;
+        internal static ConfigEntry<string> BossBiomes, BiomeOverrides, UpgradeMaterials;
+        internal static ConfigEntry<int> HarderStars;
         internal static ConfigEntry<string> WornJoint;
         internal static ConfigEntry<float> WornSize, WornRight, WornUp, WornForward, WornTurn;
         internal static ConfigEntry<bool> Verbose;
@@ -58,16 +59,31 @@ namespace Hausi
                 + "the last ingredient of its sash. A biome with no boss here has no sash; its "
                 + "trophies still work one at a time. The Ocean is that case in vanilla.");
 
-            // Empty by default on purpose. A location-only creature's trophy resolves to no biome
-            // and boosts nothing, which is the rule failing by doing less. Listing them here would
-            // be Hausi deciding that a Cultist is a Mountain creature, and it would also put that
-            // trophy into a sash's recipe for every player on the server.
-            BiomeOverrides = cfg.Bind("Biomes", "BiomeOverrides", "",
+            // Ordinary creatures that only ever stand in a location or a dungeon, so no table the
+            // game keeps can place them, and without this a Fuling shaman is nobody's. Read off a
+            // full dump of what resolved to no biome on game 1.0.21. Hildir's quest bosses and the
+            // rest are left out on purpose: they stay no biome, and that fails by doing less. Each
+            // name here is also one more trophy in that biome's sash, for every player on the server.
+            BiomeOverrides = cfg.Bind("Biomes", "BiomeOverrides",
+                "TrophyGoblinShaman:plains, TrophyGrowth:plains, TrophyUlv:mountain, TrophyCultist:mountain, "
+                + "TrophySkeletonPoison:swamp, TrophySurtling:ashlands, TrophyCharredMage:ashlands",
                 "prefab:biome, comma separated, for an item the game's tables cannot place: a trophy "
-                + "of a creature that only ever stands in a location or a dungeon. Such a trophy can "
-                + "be worn and does nothing until it is named here, and naming it adds it to that "
-                + "biome's sash. Biomes: meadows, blackforest, ocean, swamp, mountain, plains, "
-                + "mistlands, ashlands, deepnorth.");
+                + "of a creature that only ever stands in a location or a dungeon. A trophy not placed "
+                + "either way can be worn and does nothing, and naming one adds it to that biome's "
+                + "sash. `hausi sets` in the console lists what resolved to nothing. Biomes: meadows, "
+                + "blackforest, ocean, swamp, mountain, plains, mistlands, ashlands, deepnorth.");
+
+            UpgradeMaterials = cfg.Bind("Biomes", "UpgradeMaterials",
+                "meadows:DeerHide:20, blackforest:TrollHide:10, swamp:Ooze:20, mountain:WolfPelt:10, "
+                + "plains:LoxPelt:5, mistlands:Carapace:10, ashlands:AskHide:5",
+                "biome:prefab:amount, comma separated. What upgrading that biome's sash costs at a "
+                + "level 2 workbench, on top of its relic. A biome with a missing or misspelled entry "
+                + "has no sash recipe at all, and the log says so.");
+
+            HarderStars = cfg.Bind("Tiers", "HarderStars", 1,
+                "How many stars above what Vandi would give you a boss comes back with, when you offer "
+                + "at its altar in that biome's sash. It may pass Vandi's own cap by this much, because "
+                + "somebody already at the cap would otherwise get no harder a fight for it.");
 
             // Where it hangs is Local (see the plugin): nothing about it can desync anything, and
             // a host moving the trophy on your hip is not a rule of the server.

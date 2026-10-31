@@ -25,6 +25,8 @@ namespace Hausi
     /// </summary>
     internal sealed class Worn : MonoBehaviour
     {
+        private const string SashJoint = "Spine2";
+
         private int _hash;
         private GameObject _model;
 
@@ -95,12 +97,18 @@ namespace Hausi
 
         private static GameObject Build(GameObject prefab, VisEquipment vis)
         {
+            // A sash is modelled standing on the body, so its mesh is already where it goes, at its
+            // own size, and only needs a bone to ride. The chest bone, because the strap has to move
+            // with the ribs: the hip is the one part of it that will not follow, and that is why the
+            // strap stops above the hip that moves most.
+            bool sash = Sashes.BiomeOf(prefab.name) != null;
+            string jointName = sash ? SashJoint : HausiConfig.WornJoint.Value;
+
             Transform joint;
             Matrix4x4 bind;
-            if (!BindOf(vis, HausiConfig.WornJoint.Value, out joint, out bind))
+            if (!BindOf(vis, jointName, out joint, out bind))
             {
-                HausiPlugin.LogOnce("WornJoint names a bone the player does not have: "
-                                    + HausiConfig.WornJoint.Value);
+                HausiPlugin.LogOnce("A worn model names a bone the player does not have: " + jointName);
                 return null;
             }
 
@@ -117,20 +125,33 @@ namespace Hausi
                 return null;
             }
 
+            if (sash)
+            {
+                foreach (Transform part in model.transform)
+                {
+                    part.localPosition = Vector3.zero;
+                    part.localRotation = Quaternion.identity;
+                    part.localScale = Vector3.one;
+                }
+            }
+
             float longest = Longest(model);
-            float scale = longest > 0.001f ? HausiConfig.WornSize.Value / longest : 1f;
+            float scale = sash ? 1f : longest > 0.001f ? HausiConfig.WornSize.Value / longest : 1f;
 
             // The body mesh's frame is not the character's. Measured on the male rig, it is z-up in
             // hundredths of a metre, scaled by 95 and turned 270 degrees, and the character is what
             // a position in the config means. So: character to mesh, then mesh to bone.
             Matrix4x4 meshToCharacter = vis.transform.worldToLocalMatrix * vis.m_bodyModel.transform.localToWorldMatrix;
 
-            var place = new Vector3(HausiConfig.WornRight.Value, HausiConfig.WornUp.Value, HausiConfig.WornForward.Value);
+            Vector3 place = sash
+                ? Vector3.zero
+                : new Vector3(HausiConfig.WornRight.Value, HausiConfig.WornUp.Value, HausiConfig.WornForward.Value);
+            float turn = sash ? 0f : HausiConfig.WornTurn.Value;
 
             model.transform.SetParent(joint, false);
             model.transform.localPosition = bind.MultiplyPoint3x4(meshToCharacter.inverse.MultiplyPoint3x4(place));
             model.transform.localRotation = bind.rotation * Quaternion.Inverse(meshToCharacter.rotation)
-                                            * Quaternion.Euler(0f, HausiConfig.WornTurn.Value, 0f);
+                                            * Quaternion.Euler(0f, turn, 0f);
             model.transform.localScale = Vector3.one * (scale / joint.lossyScale.y);
 
             return model;

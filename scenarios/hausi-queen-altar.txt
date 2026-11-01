@@ -23,6 +23,7 @@ unkey utangard_p_$player_defeated_goblinking
 unkey vandi_p_$player_defeated_queen
 unkey vandi_harder_defeated_queen
 wait 1
+wait 3
 biome Mistlands
 wait 3
 location Mistlands_DvergrBossEntrance1 30

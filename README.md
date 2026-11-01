@@ -52,11 +52,11 @@ Harder means Vandi's stars and nothing else: this mod asks and Vandi decides, so
 difficulty system. That fight drops a relic, which with a material from the same biome upgrades the sash
 at a level 2 workbench to the true double, using the item's quality as vanilla does.
 
-The Queen has no altar. She waits behind a sealed door, so **the Mistlands sash cannot be upgraded** by this
-route.
+The Queen counts. She stands in her room the first time, and comes back to an offering of 3 Seeker Soldier
+trophies at the altar there.
 
 [Vandi](https://github.com/Ezomic/valheim-vandi) is optional and is recommended if you want the altar. The
-altar needs a Vandi that has `AskHarder` and `IsHarderSummon`. Without one, the slot still boosts drops,
+altar needs a Vandi that has `AskHarder` and `IsHarderSummon` (LHM-87, not published yet). Without one, the slot still boosts drops,
 offerings summon the plain boss, and no relic drops.
 
 ## Installing

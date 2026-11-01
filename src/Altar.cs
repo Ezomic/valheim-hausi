@@ -18,8 +18,10 @@ namespace Hausi
     /// apply as they do to any starred boss, and there is no second difficulty system here. The sash is
     /// only looked at, never taken. The offering itself costs what it always costs.
     ///
-    /// <b>The Queen has no altar.</b> She waits behind a sealed door, so no offering reaches her, and
-    /// the Mistlands relic cannot be earned this way.
+    /// <b>The Queen's room is an altar like any other.</b> She stands there the first time, behind a sealed
+    /// door, and comes back through offeraltar_queen in the room, for 3 Seeker Soldier trophies. The room
+    /// generates at y 5066, which changes nothing here: this reads no position. Frozen King's room has a
+    /// bowl as well, and asks nothing, because he drops no trophy and so has no sash.
     /// </summary>
     internal static class Altar
     {

@@ -11,7 +11,7 @@ blow is affected.
 Seven sashes, each crafted from every trophy of its biome plus its boss's. Offering at a boss's altar in that
 biome's sash asks Vandi for a harder fight, and that fight drops the relic that upgrades the sash. The altar
 half needs a Vandi that has `AskHarder` and `IsHarderSummon`; without one, offerings stay plain and the rest
-works. The Mistlands sash cannot be upgraded, because the Queen has no altar.
+works. The Queen's room has an altar too, where she is offered 3 Seeker Soldier trophies after the first fight.
 
 Two things in the build are worth a future reader's time. The killer's worn item is read off the killer's own
 ZDO and never off the local slot, because the creature's owner is often not the killer: reading the local slot

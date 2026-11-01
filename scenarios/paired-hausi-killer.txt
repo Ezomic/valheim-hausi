@@ -27,7 +27,6 @@ unkey rig_hausi_done
 clear
 god
 ghost
-biome Meadows
 wait 3
 give TrophyBoar:1
 mod hausi wear TrophyBoar

@@ -86,9 +86,6 @@ dropped TrophyBoar 0 40
 
 # What A wears, seen from here.
 waitfor rig_hausi_look 120
-partner 0 4
-wait 2
-face wood_pole2
 wait 2
 mod hausi look
 printed look.other=Hips yes

@@ -161,6 +161,7 @@ namespace Hausi
             {
                 DropBoost.Units = 0;
                 DropBoost.Extras = 0;
+                DropBoost.Relics = 0;
             }
 
             float ratio = DropBoost.Units > 0 ? (float)DropBoost.Extras / DropBoost.Units : 0f;
@@ -172,13 +173,16 @@ namespace Hausi
                 within = " within=" + (ratio >= low && ratio <= high ? "yes" : "no");
 
             term.AddString("hausi: units=" + DropBoost.Units + " extras=" + DropBoost.Extras
-                + " ratio=" + ratio.ToString("0.000", CultureInfo.InvariantCulture) + within);
+                + " ratio=" + ratio.ToString("0.000", CultureInfo.InvariantCulture) + within
+                + " relics=" + DropBoost.Relics);
         }
 
         /// <summary>
         /// How many of an item lie near you, printed so a scenario can keep the number and compare
-        /// it with another. Devkit's `dropped` wants the count written in the file, and a drop is a
-        /// roll, so this is what lets a file say "as many again as the game dropped".
+        /// it with another, and the pack beside it, because a drop that lands within reach is picked
+        /// up by itself and is then not on the floor to count. Devkit's `dropped` wants the count written
+        /// in the file, and cannot tell "none yet" from "none": a boss's ragdoll spills its loot seconds
+        /// after it dies, so `any=yes` on an item it always drops is how a file knows the loot is down.
         /// </summary>
         private static void Floor(Terminal term, Player player, Terminal.ConsoleEventArgs args)
         {
@@ -195,7 +199,10 @@ namespace Hausi
                     count += drop.m_itemData.m_stack;
             }
 
-            term.AddString("hausi: floor." + name + "=" + count);
+            int pack = player.GetInventory().GetAllItems().Where(i => i.m_dropPrefab != null && i.m_dropPrefab.name == name).Sum(i => i.m_stack);
+
+            term.AddString("hausi: floor." + name + "=" + count + " pack=" + pack + " total=" + (count + pack)
+                + " any=" + (count + pack > 0 ? "yes" : "no"));
         }
 
         /// <summary>

@@ -8,6 +8,12 @@
 # Every count here looks 80 m out. The altar puts its boss up to 40 m from its spawn point, and a
 # check at the default 20 m read "no relic" for a relic lying 30 m away.
 #
+# The one relic is checked on the ground, after the boss's HardAntler has landed: a ragdoll spills its
+# loot seconds after the death, and a count taken before that reads 0 whether a relic is coming or not.
+# The rounds wanting none read `relics=` instead, which the kill has already settled by the time `kill`
+# returns. The ground cannot answer those: sweep stops short of 80 m, so round one's relic is still lying
+# there, and a count of 0 before the spill would pass for the wrong reason anyway.
+#
 # What it proves: the boss comes one star above the record, because Vandi was asked and Vandi's stars
 # are the only difficulty there is. It drops one relic, not doubled by the very sash that asked for
 # it. The sash is not consumed. An offering without the sash, or in the wrong biome's, asks for
@@ -29,20 +35,25 @@ give HausiSash_Meadows:1
 give TrophyDeer:2
 mod hausi wear HausiSash_Meadows
 wait 2
+mod hausi stats reset
 offer TrophyDeer
 appears Eikthyr 90 80
 wait 3
 level Eikthyr 2
 carrying HausiSash_Meadows 1
 kill Eikthyr
-wait 8
-dropped HausiRelic_Meadows 1 80
-dropped TrophyEikthyr 0 80
+mod hausi floor HardAntler 80
+until 45 any=yes
+mod hausi floor HausiRelic_Meadows 80
+until 10 total=1
+mod hausi floor TrophyEikthyr 80
+printed total=0 yes
 mod hausi last
 printed last=Eikthyr yes
 printed chance=0.5 yes
 keyis vandi_p_$player_defeated_eikthyr 1
 sweep
+strip HausiRelic_Meadows,HardAntler,TrophyEikthyr
 wait 1
 
 # Taken off: one kill on record is one star, level 2, and no relic.
@@ -54,10 +65,11 @@ appears Eikthyr 90 80
 wait 3
 level Eikthyr 2
 kill Eikthyr
-wait 8
-dropped HausiRelic_Meadows 0 80
+mod hausi stats
+printed relics=1 yes
 keyis vandi_p_$player_defeated_eikthyr 2
 sweep
+strip HardAntler,TrophyEikthyr
 wait 1
 
 # The wrong biome's sash asks for nothing: two kills is two stars, level 3, and no relic of any kind.
@@ -70,9 +82,8 @@ appears Eikthyr 90 80
 wait 3
 level Eikthyr 3
 kill Eikthyr
-wait 8
-dropped HausiRelic_Meadows 0 80
-dropped HausiRelic_Swamp 0 80
+mod hausi stats
+printed relics=1 yes
 sweep
 mod hausi wear HausiSash_Swamp
 wait 2

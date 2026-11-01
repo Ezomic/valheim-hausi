@@ -46,6 +46,9 @@ namespace Hausi
         /// <summary>Units rolled and extras won since the last reset, for checking a chance.</summary>
         internal static int Units, Extras;
 
+        /// <summary>Relics added to a drop list since the last reset.</summary>
+        internal static int Relics;
+
         private static AccessTools.FieldRef<Character, HitData> _lastHit;
         private static bool _bound, _warned;
 
@@ -155,6 +158,7 @@ namespace Hausi
             if (relic == null) return -1;
 
             list.Add(new KeyValuePair<GameObject, int>(relic, 1));
+            Relics++;
             return list.Count - 1;
         }
 

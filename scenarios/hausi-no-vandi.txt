@@ -15,13 +15,14 @@ mod hausi wear HausiSash_Meadows
 wait 2
 mod hausi
 printed worn=HausiSash_Meadows yes
+mod hausi stats reset
 offer TrophyDeer
 appears Eikthyr 90 80
 wait 3
 level Eikthyr 1
 kill Eikthyr
-wait 8
-dropped HausiRelic_Meadows 0 80
+mod hausi stats
+printed relics=0 yes
 mod hausi stats reset
 spawn Boar
 kill Boar 12

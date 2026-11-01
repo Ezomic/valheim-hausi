@@ -35,8 +35,7 @@ namespace Hausi
         {
             if (_bound) return;
 
-            // Not remembered while the list has no answer: plugins load in order, and this is first
-            // asked from a world, long after. Once Chainloader has finished, an absent key is final.
+            // First asked from a world, long after every plugin has loaded, so an absent key is final.
             if (!Chainloader.PluginInfos.TryGetValue(VandiGuid, out BepInEx.PluginInfo info) || info.Instance == null)
             {
                 _bound = true;

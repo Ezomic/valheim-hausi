@@ -27,7 +27,11 @@ namespace Hausi
     {
         private const string SashJoint = "Spine2";
 
+        /// <summary>A build that could not resolve is tried again this much later, not every frame.</summary>
+        private const int RetryFrames = 60;
+
         private int _hash;
+        private int _nextTry;
         private GameObject _model;
 
         internal static string Described(VisEquipment vis)
@@ -65,7 +69,11 @@ namespace Hausi
                     worn = __instance.gameObject.AddComponent<Worn>();
                 }
 
-                if (worn._hash != hash) worn.Change(__instance, hash);
+                if (worn._hash != hash && Time.frameCount >= worn._nextTry)
+                {
+                    worn._nextTry = Time.frameCount + RetryFrames;
+                    worn.Change(__instance, hash);
+                }
             }
             catch (Exception error)
             {
@@ -75,8 +83,6 @@ namespace Hausi
 
         private void Change(VisEquipment vis, int hash)
         {
-            _hash = hash;
-
             if (_model != null)
             {
                 // Inactive at once, because Destroy waits for the end of the frame and
@@ -91,6 +97,11 @@ namespace Hausi
                 GameObject prefab = ObjectDB.instance.GetItemPrefab(hash);
                 if (prefab != null) _model = Build(prefab, vis);
             }
+
+            // Remembered only once it has worked. A wearer can be seen before their item resolves, in
+            // the stub ObjectDB of a session or before this mod's prefabs are back in a new world, and
+            // remembering the hash regardless would leave them bare until they next changed it.
+            if (hash == 0 || _model != null) _hash = hash;
 
             RefreshLods(vis);
         }

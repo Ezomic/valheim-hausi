@@ -70,13 +70,13 @@ namespace Hausi
 
         internal static bool Is(ItemDrop.ItemData item)
         {
-            return item != null && item.m_dropPrefab != null && item.m_dropPrefab.name.StartsWith(Prefix);
+            return item != null && item.m_dropPrefab != null && item.m_dropPrefab.name.StartsWith(Prefix, StringComparison.Ordinal);
         }
 
         /// <summary>The biome a sash prefab belongs to, or null for anything that is not one.</summary>
         internal static string BiomeOf(string prefabName)
         {
-            if (string.IsNullOrEmpty(prefabName) || !prefabName.StartsWith(Prefix)) return null;
+            if (string.IsNullOrEmpty(prefabName) || !prefabName.StartsWith(Prefix, StringComparison.Ordinal)) return null;
 
             return prefabName.Substring(Prefix.Length).ToLowerInvariant();
         }
@@ -111,7 +111,7 @@ namespace Hausi
             ItemDrop.ItemData.SharedData shared = clone.GetComponent<ItemDrop>().m_itemData.m_shared;
             shared.m_name = title + " Sash";
             shared.m_description = "Made from every trophy of the " + title + " and its boss. Worn in the trophy "
-                                   + "slot, its creatures give half as much again, and never their trophy.";
+                                   + "slot, its creatures give more, and never their trophy.";
             shared.m_itemType = ItemDrop.ItemData.ItemType.Misc;
             shared.m_maxStackSize = 1;
             shared.m_maxQuality = 2;

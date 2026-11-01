@@ -87,8 +87,12 @@ namespace Hausi
             int hash = killer.GetInt(Slot.WornKey);
             if (hash == 0) return;
 
+            // A client writes its own ZDO, so what it names is checked to be something wearable. A sash
+            // or a trophy it does not own only cheats its own kills; any item with a biome would not
+            // even be that, it would be a new tier nobody designed.
             GameObject worn = ObjectDB.instance.GetItemPrefab(hash);
-            if (worn == null) return;
+            if (worn == null || !worn.TryGetComponent(out ItemDrop wornItem)) return;
+            if (!Biomes.IsTrophy(wornItem) && Sashes.BiomeOf(worn.name) == null) return;
 
             var decision = new Decision
             {

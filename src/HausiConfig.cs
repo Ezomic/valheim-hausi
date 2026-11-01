@@ -35,15 +35,16 @@ namespace Hausi
             // Chances rather than multipliers, because the rule is per unit: a Boar dropping 2
             // meat rolls twice, each for one more. A multiplier on the stack would have to round,
             // and rounding 1 x 1.25 gives nothing at all on the commonest drop in the game.
-            TrophyChance = cfg.Bind("Tiers", "TrophyChance", 0.25f,
+            TrophyChance = cfg.Bind("Tiers", "TrophyChance", 0.25f, new ConfigDescription(
                 "Worn trophy: the chance, 0 to 1, that each unit a creature of its biome drops comes "
-                + "with one more. 0.25 is what a player reads as 1.25x.");
+                + "with one more. 0.25 is what a player reads as 1.25x.", new AcceptableValueRange<float>(0f, 1f)));
 
-            SashChance = cfg.Bind("Tiers", "SashChance", 0.5f,
-                "The same for that biome's sash. 0.5 is 1.5x.");
+            SashChance = cfg.Bind("Tiers", "SashChance", 0.5f, new ConfigDescription(
+                "The same for that biome's sash. 0.5 is 1.5x.", new AcceptableValueRange<float>(0f, 1f)));
 
-            UpgradedChance = cfg.Bind("Tiers", "UpgradedChance", 1f,
-                "The same for an upgraded sash. 1 is a true double, every unit, every time.");
+            UpgradedChance = cfg.Bind("Tiers", "UpgradedChance", 1f, new ConfigDescription(
+                "The same for an upgraded sash. 1 is a true double, every unit, every time.",
+                new AcceptableValueRange<float>(0f, 1f)));
 
             // The one fact the game's tables do not hold, as Vandi's and Yoke's copies of this
             // same row say: nothing reads "defeated_gdking belongs to the Black Forest" off a

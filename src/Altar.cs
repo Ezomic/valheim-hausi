@@ -5,11 +5,14 @@ namespace Hausi
     /// <summary>
     /// Offering at a boss's altar in that biome's sash asks Vandi for the harder fight.
     ///
-    /// <b>On vanilla's own method.</b> InitiateSpawnBoss is what every altar goes through, offering
-    /// items or bells on stands alike, and it runs on the client that made the offering, which is the
-    /// only machine that knows what they wear. Utangard has no hook to offer: its altar code is a
-    /// refusing prefix on this same method. So this checks __runOriginal, as Vandi's own postfix does,
-    /// and a refused offering asks for nothing.
+    /// <b>When the altar has said yes, on the machine that made the offering.</b> Every altar goes
+    /// through InitiateSpawnBoss, offering items or bells on stands alike, but that only sends a request:
+    /// the altar's owner decides, and says nothing to a player it turns away because a summon is already
+    /// on its way. Asking from there is how one player's sash would harden somebody else's boss, since an
+    /// ask names a boss and not a fight. RPC_BossSpawnInitiated reaches only the sender of an accepted
+    /// offering, which is the one machine that also knows what they wear, and it lands inside the altar's
+    /// spawn delay. Utangard has no hook to offer: its altar code is a refusing prefix on
+    /// InitiateSpawnBoss, so a refused offering never gets this far.
     ///
     /// <b>Stars are Vandi's.</b> This asks and Vandi decides, so its boss health, specials and credit all
     /// apply as they do to any starred boss, and there is no second difficulty system here. The sash is
@@ -20,11 +23,11 @@ namespace Hausi
     /// </summary>
     internal static class Altar
     {
-        [HarmonyPatch(typeof(OfferingBowl), "InitiateSpawnBoss")]
+        [HarmonyPatch(typeof(OfferingBowl), "RPC_BossSpawnInitiated")]
         [HarmonyPostfix]
-        private static void Offered(OfferingBowl __instance, bool __runOriginal)
+        private static void Accepted(OfferingBowl __instance)
         {
-            if (!__runOriginal || !HausiConfig.Enabled.Value || __instance == null || __instance.m_bossPrefab == null) return;
+            if (!HausiConfig.Enabled.Value || __instance == null || __instance.m_bossPrefab == null) return;
 
             ItemDrop.ItemData worn = Slot.Worn(Player.m_localPlayer);
             if (worn == null || !Sashes.Is(worn)) return;

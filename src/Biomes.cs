@@ -53,6 +53,9 @@ namespace Hausi
             // ingredients for the whole visit.
             HausiConfig.BossBiomes.SettingChanged += (sender, args) => Forget();
             HausiConfig.BiomeOverrides.SettingChanged += (sender, args) => Forget();
+
+            // Read only when a recipe is written, so it only needs the recipes to notice.
+            HausiConfig.UpgradeMaterials.SettingChanged += (sender, args) => Generation++;
         }
 
         private static void Forget()

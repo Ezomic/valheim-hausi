@@ -112,9 +112,17 @@ printed units=0 extras=0 yes
 dropped TrophyBoar 0 40
 sweep
 
-# So the watcher can look.
+# So the watcher can look: the trophy, then the sash, from in front. The pole is what its camera aims
+# at, a metre behind this character, because `face` turns towards a piece and not towards a player.
+place wood_pole2 -1 0
+wait 1
 key rig_hausi_look
+waitfor rig_hausi_seen_trophy 120
+give HausiSash_Meadows:1
+mod hausi wear HausiSash_Meadows
+wait 2
+key rig_hausi_look2
 waitfor rig_hausi_done 120
-mod hausi wear TrophyBoar
+mod hausi wear HausiSash_Meadows
 wait 2
 clear

@@ -2,6 +2,12 @@
 # Hausi - offering at a boss's altar in that biome's sash. NEEDS a Vandi with AskHarder and
 # IsHarderSummon. hausi-no-vandi is the same altar without them.
 #
+# `appears` and not a fixed wait: this altar takes 12s by its own account, and a game running slowly in
+# the background took longer, which read as the mod not summoning.
+#
+# Every count here looks 80 m out. The altar puts its boss up to 40 m from its spawn point, and a
+# check at the default 20 m read "no relic" for a relic lying 30 m away.
+#
 # What it proves: the boss comes one star above the record, because Vandi was asked and Vandi's stars
 # are the only difficulty there is. It drops one relic, not doubled by the very sash that asked for
 # it. The sash is not consumed. An offering without the sash, or in the wrong biome's, asks for
@@ -24,13 +30,14 @@ give TrophyDeer:2
 mod hausi wear HausiSash_Meadows
 wait 2
 offer TrophyDeer
-wait 20
+appears Eikthyr 90 80
+wait 3
 level Eikthyr 2
 carrying HausiSash_Meadows 1
 kill Eikthyr
 wait 8
-dropped HausiRelic_Meadows 1
-dropped TrophyEikthyr 0
+dropped HausiRelic_Meadows 1 80
+dropped TrophyEikthyr 0 80
 mod hausi last
 printed last=Eikthyr yes
 printed chance=0.5 yes
@@ -43,11 +50,12 @@ mod hausi wear HausiSash_Meadows
 wait 2
 give TrophyDeer:2
 offer TrophyDeer
-wait 20
+appears Eikthyr 90 80
+wait 3
 level Eikthyr 2
 kill Eikthyr
 wait 8
-dropped HausiRelic_Meadows 0
+dropped HausiRelic_Meadows 0 80
 keyis vandi_p_$player_defeated_eikthyr 2
 sweep
 wait 1
@@ -58,12 +66,13 @@ give TrophyDeer:2
 mod hausi wear HausiSash_Swamp
 wait 2
 offer TrophyDeer
-wait 20
+appears Eikthyr 90 80
+wait 3
 level Eikthyr 3
 kill Eikthyr
 wait 8
-dropped HausiRelic_Meadows 0
-dropped HausiRelic_Swamp 0
+dropped HausiRelic_Meadows 0 80
+dropped HausiRelic_Swamp 0 80
 sweep
 mod hausi wear HausiSash_Swamp
 wait 2

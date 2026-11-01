@@ -11,8 +11,9 @@ namespace Hausi
     /// last kill decided. It exists for a player asking why a kill gave nothing and for a Devkit
     /// scenario, which can run this and assert on what it printed.
     ///
-    /// <b>isCheat: false, and that is honest.</b> Every verb reads, and `wear` makes the call the
-    /// inventory's right click makes. `stats reset` zeroes a counter this mod keeps for itself.
+    /// <b>isCheat: false, and that is honest.</b> Every verb but three only reads. `wear` makes the call
+    /// the inventory's right click makes, `stats reset` zeroes a counter this mod keeps for itself, and
+    /// `reload` reads your own player back from what was written a moment before.
     ///
     /// <b>The output is written to be asserted on.</b> Facts are name=value tokens with no spaces
     /// inside them, because Devkit's `printed` step matches a substring.
@@ -33,8 +34,9 @@ namespace Hausi
             _registered = true;
 
             new Terminal.ConsoleCommand("hausi",
-                "[wear <prefab> | sets | last | look | stats [reset] | floor <prefab> [metres] | "
-                + "biomes <prefab...>] - what you wear, what each biome's set is, what the last kill decided",
+                "[wear <prefab> | sets | last | look | stats [reset | within <low> <high>] | floor <prefab> "
+                + "[metres] | biomes <prefab...> | reload] - what you wear, what each biome's set is, what the "
+                + "last kill decided",
                 OnCommand, isCheat: false);
         }
 
@@ -182,7 +184,7 @@ namespace Hausi
         {
             string name = args.Length > 2 ? args[2] : "";
             float metres = 20f;
-            if (args.Length > 3) float.TryParse(args[3], out metres);
+            if (args.Length > 3 && !float.TryParse(args[3], NumberStyles.Float, CultureInfo.InvariantCulture, out metres)) metres = 20f;
 
             int count = 0;
             foreach (ItemDrop drop in Object.FindObjectsOfType<ItemDrop>())
@@ -197,18 +199,23 @@ namespace Hausi
         }
 
         /// <summary>
-        /// Your own player written out and read straight back through the game's Save and Load,
-        /// which is the half of a relog this mod depends on: m_equipped surviving the save format,
-        /// and EquipInventoryItems putting it back in the slot. It exists because a scenario cannot
-        /// survive a restart, and a Devkit quit did not leave the inventory on disk when tried. It
-        /// changes nothing the file did not already say.
+        /// Your pack written out and read straight back in the order Player.Load does it, which is the
+        /// half of a relog this mod depends on: m_equipped surviving the save format, and
+        /// EquipInventoryItems putting it back in the slot. It exists because a scenario cannot survive
+        /// a restart, and a Devkit quit leaves no inventory on disk, with or without this mod.
+        ///
+        /// The pack and not the whole player. Player.Load is not safe to run twice: it adds to
+        /// m_knownStations with Dictionary.Add, so on any character who knows a workbench it throws
+        /// halfway and leaves the player half loaded. That was this verb's first version.
         /// </summary>
         private static void Reload(Terminal term, Player player)
         {
             var package = new ZPackage();
-            player.Save(package);
+            player.GetInventory().Save(package);
             package.SetPos(0);
-            player.Load(package);
+            player.UnequipAllItems();
+            player.GetInventory().Load(package);
+            AccessTools.Method(typeof(Player), "EquipInventoryItems").Invoke(player, null);
             term.AddString("hausi: reloaded");
         }
 

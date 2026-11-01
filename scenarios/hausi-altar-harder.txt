@@ -25,6 +25,10 @@ ghost
 unkey vandi_p_$player_defeated_eikthyr
 unkey vandi_harder_defeated_eikthyr
 wait 1
+# In the Meadows, because Utangard refuses this altar anywhere the group has not earned, and the file
+# before this one may have left the character anywhere.
+biome Meadows
+wait 3
 location Eikthyrnir
 wait 3
 banish Eikthyr 80

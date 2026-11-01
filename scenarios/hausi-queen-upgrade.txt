@@ -87,4 +87,13 @@ printed chance=1 yes
 sweep
 mod hausi wear HausiSash_Mistlands
 wait 2
+goto piece_workbench
+
+# The window remembers its tab across scenarios, and on the Upgrade tab its big button also reads
+# Upgrade, so the next file's `press Upgrade` would press that instead of the tab.
+use piece_workbench
+wait 1
+press Craft
+wait 1
+close
 clear

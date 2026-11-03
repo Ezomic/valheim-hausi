@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Ezomic.Shared;
 using HarmonyLib;
 using UnityEngine;
 
@@ -35,7 +36,7 @@ namespace Hausi
             _registered = true;
 
             new Terminal.ConsoleCommand("hausi",
-                "[wear <prefab> | sets | last | look | stats [reset | within <low> <high>] | floor <prefab> "
+                "[wear <prefab> | fill <prefab> | sets | last | look | stats [reset | within <low> <high>] | floor <prefab> "
                 + "[metres] | biomes <prefab...> | reload] - what you wear, what each biome's set is, what the "
                 + "last kill decided",
                 OnCommand, isCheat: false);
@@ -56,6 +57,7 @@ namespace Hausi
             switch (args.Length > 1 ? args[1].ToLowerInvariant() : "")
             {
                 case "wear": Wear(term, player, args); break;
+                case "fill": Fill(term, player, args); break;
                 case "sets": Sets(term); break;
                 case "last": Last(term); break;
                 case "look": Look(term); break;
@@ -99,6 +101,35 @@ namespace Hausi
 
             player.UseItem(player.GetInventory(), item, fromInventoryGui: true);
             term.AddString("hausi: used " + args[2]);
+        }
+
+        private static void Fill(Terminal term, Player player, Terminal.ConsoleEventArgs args)
+        {
+            ItemDrop.ItemData item = args.Length > 2
+                ? player.GetInventory().GetItem(args[2], -1, isPrefabName: true)
+                : null;
+
+            if (item == null)
+            {
+                term.AddString("hausi: not carrying that");
+                return;
+            }
+
+            var pieces = new List<Piece>();
+            Piece.GetAllPiecesInRadius(player.transform.position, 20f, pieces);
+            Piece table = pieces
+                .Where(p => Utils.GetPrefabName(p.gameObject) == InfusionTable.PrefabName)
+                .OrderBy(p => Vector3.Distance(p.transform.position, player.transform.position))
+                .FirstOrDefault();
+
+            if (table == null)
+            {
+                term.AddString("hausi: no " + InfusionTable.PrefabName + " within 20 m");
+                return;
+            }
+
+            bool took = table.GetComponentsInChildren<Interactable>().Any(i => i.UseItem(player, item));
+            term.AddString("hausi: fill took=" + (took ? "yes" : "no"));
         }
 
         private static void Sets(Terminal term)

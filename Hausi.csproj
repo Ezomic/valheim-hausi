@@ -60,6 +60,11 @@
     <Reference Include="UnityEngine.ParticleSystemModule"><HintPath>$(ManagedDir)\UnityEngine.ParticleSystemModule.dll</HintPath><Private>false</Private></Reference>
     <!-- Colliders on the linked Infusion Table. -->
     <Reference Include="UnityEngine.PhysicsModule"><HintPath>$(ManagedDir)\UnityEngine.PhysicsModule.dll</HintPath><Private>false</Private></Reference>
+    <!-- The Infusion Table's window is Unity UI built from the inventory window's own pieces. -->
+    <Reference Include="UnityEngine.UIModule"><HintPath>$(ManagedDir)\UnityEngine.UIModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UI"><HintPath>$(ManagedDir)\UnityEngine.UI.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.TextRenderingModule"><HintPath>$(ManagedDir)\UnityEngine.TextRenderingModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.TextMeshPro"><HintPath>$(ManagedDir)\Unity.TextMeshPro.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="BepInEx"><HintPath>$(BepInExCore)\BepInEx.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="0Harmony"><HintPath>$(BepInExCore)\0Harmony.dll</HintPath><Private>false</Private></Reference>
   </ItemGroup>
@@ -69,6 +74,7 @@
     <Compile Include="..\core\shared\BiomeIndex.cs" Link="shared\BiomeIndex.cs" />
     <Compile Include="..\core\shared\Prefabs.cs" Link="shared\Prefabs.cs" />
     <Compile Include="..\core\shared\InfusionTable.cs" Link="shared\InfusionTable.cs" />
+    <Compile Include="..\core\shared\InfusionWindow.cs" Link="shared\InfusionWindow.cs" />
   </ItemGroup>
 
   <ItemGroup>

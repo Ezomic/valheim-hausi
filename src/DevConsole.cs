@@ -36,7 +36,7 @@ namespace Hausi
             _registered = true;
 
             new Terminal.ConsoleCommand("hausi",
-                "[wear <prefab> | fill <prefab> | sets | last | look | stats [reset | within <low> <high>] | floor <prefab> "
+                "[wear <prefab> | fill <prefab> | place <prefab> | window | sets | last | look | stats [reset | within <low> <high>] | floor <prefab> "
                 + "[metres] | biomes <prefab...> | reload] - what you wear, what each biome's set is, what the "
                 + "last kill decided",
                 OnCommand, isCheat: false);
@@ -58,6 +58,8 @@ namespace Hausi
             {
                 case "wear": Wear(term, player, args); break;
                 case "fill": Fill(term, player, args); break;
+                case "place": Place(term, player, args); break;
+                case "window": term.AddString("hausi: " + InfusionTable.WindowState()); break;
                 case "sets": Sets(term); break;
                 case "last": Last(term); break;
                 case "look": Look(term); break;
@@ -130,6 +132,22 @@ namespace Hausi
 
             bool took = table.GetComponentsInChildren<Interactable>().Any(i => i.UseItem(player, item));
             term.AddString("hausi: fill took=" + (took ? "yes" : "no"));
+        }
+
+        private static void Place(Terminal term, Player player, Terminal.ConsoleEventArgs args)
+        {
+            ItemDrop.ItemData item = args.Length > 2
+                ? player.GetInventory().GetItem(args[2], -1, isPrefabName: true)
+                : null;
+
+            if (item == null)
+            {
+                term.AddString("hausi: not carrying that");
+                return;
+            }
+
+            player.UseItem(player.GetInventory(), item, fromInventoryGui: true);
+            term.AddString("hausi: right-clicked " + args[2]);
         }
 
         private static void Sets(Terminal term)

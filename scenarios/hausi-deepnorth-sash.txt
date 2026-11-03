@@ -80,7 +80,7 @@ printed biome=deepnorth yes
 printed published=yes yes
 mod hausi look
 printed look.self=Spine2 yes
-printed glow=none yes
+printed glow.self=none yes
 sweep
 spawn Moose
 kill Moose 12
@@ -114,7 +114,7 @@ carrying HausiSash_DeepNorth 1
 mod hausi wear HausiSash_DeepNorth
 wait 2
 mod hausi look
-printed glow=#3A86A6 yes
+printed glow.self=#1D4353 yes
 screenshot
 sweep
 spawn Moose

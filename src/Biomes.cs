@@ -42,7 +42,8 @@ namespace Hausi
 
             /// <summary>
             /// The boss's trophy, which is also in Trophies, or for a boss with none the BossItems
-            /// stand-in, which is not: it is no trophy, so it can be worn by nobody and blocks nothing.
+            /// stand-in, which is not. The default stand-in is no trophy, so it can be worn by nobody
+            /// and blocks nothing; one a host names is whatever they named.
             /// </summary>
             internal ItemDrop BossTrophy;
         }
@@ -221,7 +222,7 @@ namespace Hausi
             return string.Join("; ", parts.ToArray());
         }
 
-        /// <summary>The first BossItems entry for a biome, resolved, or null.</summary>
+        /// <summary>The first BossItems entry for a biome that resolves, or null.</summary>
         private static ItemDrop BossItem(string biome)
         {
             foreach (string entry in (HausiConfig.BossItems.Value ?? "").Split(','))
@@ -232,9 +233,7 @@ namespace Hausi
                 GameObject prefab = ObjectDB.instance.GetItemPrefab(pair[1].Trim());
                 if (prefab != null && prefab.TryGetComponent(out ItemDrop item)) return item;
 
-                HausiPlugin.Log.LogWarning("BossItems names " + pair[1].Trim() + " for " + biome
-                                           + ", which is no item, so that biome has no sash recipe.");
-                return null;
+                HausiPlugin.Log.LogWarning("BossItems names " + pair[1].Trim() + " for " + biome + ", which is no item.");
             }
 
             return null;

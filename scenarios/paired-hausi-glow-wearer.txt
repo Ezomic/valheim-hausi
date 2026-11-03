@@ -1,0 +1,101 @@
+#! partner paired-hausi-glow-watcher
+#! nostage
+# Hausi, TWO CLIENTS: an upgraded sash's glow as the other machine draws it (LHM-98). This side wears an
+# upgraded Deep North sash, the watcher a plain one. Each then looks at the other, face to face.
+#
+# What it proves. The glow is read off the wearer's ZDO quality, so the watcher's machine must draw this
+# side's token lit without ever having held the sash, and must not light its own plain one. And this side
+# must not light the watcher's plain sash off its own upgraded one. Code driving the glow from the local
+# slot passes every single-player scenario and fails one of those four checks here.
+#
+# The bench is built ahead and the meeting happens forty metres to the left of the run's starting point,
+# so neither stands in a wall or on a roof left by an earlier run. The torch and the pole are only something for `face` to aim at, each beyond the other player, and
+# of a kind the shed does not use, because `face` turns to the nearest piece of that name.
+
+unkey rig_glow_a
+unkey rig_glow_b
+unkey rig_glow_done
+clear
+god
+ghost
+wait 3
+
+# A bulldozer: every piece within the radius goes, so the shed below is not built into the last run's.
+wipe 25
+
+# A recipe is known once every material has been held, and the Upgrade tab lists only known recipes.
+give TrophyBarka:1,TrophyElaking:1,TrophyJotunWarrior:1,TrophyJotunWitch:1,TrophyMoose:1,TrophySeal:1,FrozenKingDrop:1
+wait 1
+strip TrophyBarka,TrophyElaking,TrophyJotunWarrior,TrophyJotunWitch,TrophyMoose,TrophySeal,FrozenKingDrop
+
+place wood_beam 3.2 1.0 5 0.01
+place wood_beam 3.4 -1.0 -174 0.00
+place wood_floor 4.2 1.1 -174 0.02
+place wood_floor 4.4 -0.9 -174 0.03
+place wood_beam 4.1 2.1 -84 0.00
+place wood_beam 4.5 -1.9 -84 0.03
+place wood_beam 5.2 1.2 -174 0.00
+place wood_beam 5.4 -0.8 -174 0.06
+place piece_workbench 4.6 0.1 -174 0.10
+place wood_pole2 3.1 2.0 5 1.04
+place wood_pole2 3.5 -2.0 5 1.00
+place woodwall 4.1 2.1 96 1.00
+place woodwall 4.5 -1.9 -84 1.03
+place woodwall 5.2 1.2 5 1.00
+place woodwall 5.4 -0.8 5 1.06
+place wood_pole2 5.1 2.2 5 1.01
+place wood_pole2 5.5 -1.8 5 1.07
+place wood_roof_ocorner_45 4.2 1.1 5 2.02
+place wood_roof_ocorner_45 4.4 -0.9 -84 2.03
+place wood_beam 4.1 2.1 95 2.00
+place wood_beam 4.5 -1.9 -84 2.03
+place wood_beam 5.2 1.2 5 2.00
+place wood_beam 5.4 -0.8 5 2.06
+place wood_beam_45 3.2 1.0 -174 3.01
+place wood_beam_45 3.4 -1.0 6 3.00
+place piece_workbench_ext1 7.2 0.2 -90 0
+wait 2
+goto piece_workbench
+give HausiSash_DeepNorth:1
+give HausiRelic_DeepNorth:1
+give MooseHide:10
+wait 1
+use piece_workbench
+wait 2
+press Upgrade
+wait 2
+craft HausiSash_DeepNorth
+wait 5
+press Craft
+wait 1
+close
+wait 1
+carrying HausiRelic_DeepNorth 0
+
+mod hausi wear HausiSash_DeepNorth
+wait 2
+returnhome
+wait 2
+move 0 -40
+wait 3
+wipe 15
+place piece_groundtorch_wood -8 0 0 0
+wait 1
+face piece_groundtorch_wood 12
+wait 2
+mod hausi look
+printed glow.self=#1D4353 yes
+key rig_glow_a
+
+# The watcher stands three metres ahead, turns round and looks. Then it is this side's turn.
+waitfor rig_glow_b 300
+wait 3
+mod hausi look
+printed glow.self=#1D4353 yes
+printed look.other=Spine2 yes
+printed glow.other=none yes
+screenshot
+key rig_glow_done
+mod hausi wear HausiSash_DeepNorth
+wait 2
+clear

@@ -1,0 +1,31 @@
+#! partner paired-hausi-glow-wearer
+#! nostage
+# Hausi, TWO CLIENTS: the side in a plain Deep North sash. See paired-hausi-glow-wearer for why.
+
+unkey rig_glow_b
+clear
+god
+ghost
+give HausiSash_DeepNorth:1
+mod hausi wear HausiSash_DeepNorth
+wait 2
+waitfor rig_glow_a 600
+
+# Three metres ahead of the wearer, facing their way, then round to face them over a pole behind them.
+partner 0 3
+wait 3
+place wood_pole -5 0 0 0
+wait 1
+face wood_pole 12
+wait 3
+mod hausi look
+printed look.self=Spine2 yes
+printed glow.self=none yes
+printed glow.other=#1D4353 yes
+screenshot
+key rig_glow_b
+
+waitfor rig_glow_done 120
+mod hausi wear HausiSash_DeepNorth
+wait 2
+clear

@@ -130,10 +130,11 @@ namespace Hausi
                 "Degrees the trophy is turned about the vertical. -90 faces the wearer's left.");
 
             // Dim on purpose: this is the emission added to a lit surface, so a full colour turns
-            // the token into a lamp and the rule was "faintly".
+            // the token into a lamp and the rule was "faintly". Twice these values read as a vivid
+            // cyan badge at night from another player's screen, measured on the Deep North sash.
             GlowColours = cfg.Bind("Worn", "GlowColours",
-                "meadows:#4E7A2C, blackforest:#2E6B5A, swamp:#7A7A1E, mountain:#7C8A99, plains:#8C6A1C, "
-                + "mistlands:#5E3A86, ashlands:#99361A, deepnorth:#3A86A6",
+                "meadows:#273D16, blackforest:#17352D, swamp:#3D3D0F, mountain:#3E454C, plains:#46350E, "
+                + "mistlands:#2F1D43, ashlands:#4D1B0D, deepnorth:#1D4353",
                 "biome:#RRGGBB, comma separated. The faint glow on an upgraded sash's token, as every "
                 + "machine draws it. A biome with no entry, or one that does not parse, does not glow.");
 

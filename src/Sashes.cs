@@ -276,7 +276,8 @@ namespace Hausi
             Biomes.BiomeSet set = Biomes.SetOf(key.ToLowerInvariant());
             if (set == null || set.BossTrophy == null)
             {
-                HausiPlugin.Log.LogInfo("No sash recipe for " + key + ": BossBiomes and the game's tables give it no boss trophy.");
+                HausiPlugin.Log.LogInfo("No sash recipe for " + key + ": BossBiomes and the game's tables give it no boss "
+                                        + "trophy, and BossItems no stand-in.");
                 return;
             }
 

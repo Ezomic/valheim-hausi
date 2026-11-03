@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased
+
+A Deep North sash, the eighth. The Frozen King drops no trophy, so it takes his Sacrificial Blood as the
+last ingredient beside the six Deep North trophies, through a new `BossItems` setting. Its upgrade is its
+relic and 10 Moose hide. The token and relic models are placeholders until the real art lands.
+
+An upgraded sash's token glows faintly in its biome's colour, on every player's screen, with no light.
+The colours are `GlowColours` under `[Worn]`, local to each machine.
+
+Skeletons and Rancid Remains now belong to the Black Forest and the Surtling to the Swamp, where a player
+first meets them. This is a new default, so a config file written by an earlier build keeps the old
+`BiomeOverrides` and `UpgradeMaterials` lines: without `deepnorth:MooseHide:10` in the second there is no
+Deep North sash recipe. Edit both lines, or delete them and let the mod write them again.
+
 ## 1.0.0 - unreleased
 
 The Infusion Table is Debug only. Its proof recipe (a Boar trophy and a Deer Hide make the Meadows relic) lets

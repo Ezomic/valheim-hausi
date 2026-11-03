@@ -52,6 +52,8 @@ namespace Hausi
         /// </summary>
         private static readonly Dictionary<Material, Material> Emissive = new Dictionary<Material, Material>();
 
+        private static readonly HashSet<Material> Copies = new HashSet<Material>();
+
         internal static string Described(VisEquipment vis)
         {
             Worn worn;
@@ -62,10 +64,16 @@ namespace Hausi
             Vector3 onBody = vis.transform.InverseTransformPoint(model.position);
 
             return model.parent.name + " renderers=" + renderers.Length
-                   + " glow=" + worn._glowSaid
                    + " longest=" + (Longest(worn._model) * model.lossyScale.y)
                        .ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)
                    + " at=" + onBody.ToString("F2").Replace(" ", "");
+        }
+
+        /// <summary>The colour this machine drew a player's token in, as #RRGGBB, or none.</summary>
+        internal static string Glowing(VisEquipment vis)
+        {
+            Worn worn;
+            return vis != null && vis.TryGetComponent(out worn) && worn._model != null ? worn._glowSaid : "none";
         }
 
         [HarmonyPatch(typeof(VisEquipment), "UpdateVisuals")]
@@ -238,12 +246,17 @@ namespace Hausi
 
         private static Material EmissiveOf(Material source)
         {
+            // A renderer lit once already wears the copy, and a sash taken from quality 2 to 1 and
+            // back keeps it: copying the copy would make one more material per cycle, on every
+            // machine that sees that player.
+            if (Copies.Contains(source)) return source;
             if (Emissive.TryGetValue(source, out Material copy) && copy != null) return copy;
 
             copy = new Material(source) { name = source.name + " (hausi glow)" };
             copy.EnableKeyword(EmissionKeyword);
             copy.SetColor(Emission, Color.black);
             Emissive[source] = copy;
+            Copies.Add(copy);
 
             return copy;
         }

@@ -35,7 +35,7 @@ namespace Hausi
     {
         public const string PluginGuid = "ezomic.valheim.hausi";
         public const string PluginName = "Hausi";
-        public const string PluginVersion = "0.1.0";
+        public const string PluginVersion = "1.0.0";
         public const string PluginAuthor = "Robbin Thijssen";
 
         /// <summary>Core's plugin GUID. Optional - see TryRegisterWithCore.</summary>
@@ -68,9 +68,12 @@ namespace Hausi
             Biomes.Wire();
             Sashes.Keep();
 
+#if DEBUG
             // A proof of the shared table, not a feature: the relic is registered by Sashes a few
-            // frames in, and InfusionTable retries a name that does not resolve yet.
+            // frames in, and InfusionTable retries a name that does not resolve yet. Debug only,
+            // because a craftable Meadows relic would let a player skip the harder boss fight.
             InfusionTable.AddRecipe("TrophyBoar", "DeerHide", "HausiRelic_Meadows", InfusionLiquid.Any);
+#endif
 
             // PatchAll over named types, never the whole assembly. A bare PatchAll() walks
             // every type in the DLL, so a half-written patch class in another file goes live
@@ -92,7 +95,9 @@ namespace Hausi
         private void Update()
         {
             Prefabs.Tick();
+#if DEBUG
             InfusionTable.Tick();
+#endif
             Biomes.Tick();
             Sashes.Tick();
             Slot.Tick();

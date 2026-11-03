@@ -14,7 +14,7 @@
     <AssemblyName>Hausi</AssemblyName>
     <RootNamespace>Hausi</RootNamespace>
     <LangVersion>latest</LangVersion>
-    <Version>0.1.0</Version>
+    <Version>1.0.0</Version>
     <Authors>Robbin Thijssen</Authors>
     <Company>Thijssen Software</Company>
     <Product>Hausi</Product>
@@ -58,13 +58,6 @@
     <Reference Include="UnityEngine.CoreModule"><HintPath>$(ManagedDir)\UnityEngine.CoreModule.dll</HintPath><Private>false</Private></Reference>
     <!-- The donor item's pick-me-up sparkle is stripped from every sash and relic. -->
     <Reference Include="UnityEngine.ParticleSystemModule"><HintPath>$(ManagedDir)\UnityEngine.ParticleSystemModule.dll</HintPath><Private>false</Private></Reference>
-    <!-- Colliders on the linked Infusion Table. -->
-    <Reference Include="UnityEngine.PhysicsModule"><HintPath>$(ManagedDir)\UnityEngine.PhysicsModule.dll</HintPath><Private>false</Private></Reference>
-    <!-- The Infusion Table's window is Unity UI built from the inventory window's own pieces. -->
-    <Reference Include="UnityEngine.UIModule"><HintPath>$(ManagedDir)\UnityEngine.UIModule.dll</HintPath><Private>false</Private></Reference>
-    <Reference Include="UnityEngine.UI"><HintPath>$(ManagedDir)\UnityEngine.UI.dll</HintPath><Private>false</Private></Reference>
-    <Reference Include="UnityEngine.TextRenderingModule"><HintPath>$(ManagedDir)\UnityEngine.TextRenderingModule.dll</HintPath><Private>false</Private></Reference>
-    <Reference Include="Unity.TextMeshPro"><HintPath>$(ManagedDir)\Unity.TextMeshPro.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="BepInEx"><HintPath>$(BepInExCore)\BepInEx.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="0Harmony"><HintPath>$(BepInExCore)\0Harmony.dll</HintPath><Private>false</Private></Reference>
   </ItemGroup>
@@ -73,6 +66,20 @@
     <!-- Shared source, compiled in rather than called in Core's DLL: see each file's header. -->
     <Compile Include="..\core\shared\BiomeIndex.cs" Link="shared\BiomeIndex.cs" />
     <Compile Include="..\core\shared\Prefabs.cs" Link="shared\Prefabs.cs" />
+  </ItemGroup>
+
+  <!--
+    The Infusion Table is Debug only. Its one recipe makes the Meadows relic from a Boar trophy and
+    a Deer Hide, which would let a player skip the harder boss fight, so a release ships no table,
+    no recipe and no piece_ezomic_infusion prefab to be kept forever. Debug builds keep it because
+    scenarios/hausi-infusion-table.txt is the test of the shared table and its window.
+  -->
+  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+    <Reference Include="UnityEngine.PhysicsModule"><HintPath>$(ManagedDir)\UnityEngine.PhysicsModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UIModule"><HintPath>$(ManagedDir)\UnityEngine.UIModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UI"><HintPath>$(ManagedDir)\UnityEngine.UI.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.TextRenderingModule"><HintPath>$(ManagedDir)\UnityEngine.TextRenderingModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.TextMeshPro"><HintPath>$(ManagedDir)\Unity.TextMeshPro.dll</HintPath><Private>false</Private></Reference>
     <Compile Include="..\core\shared\InfusionTable.cs" Link="shared\InfusionTable.cs" />
     <Compile Include="..\core\shared\InfusionWindow.cs" Link="shared\InfusionWindow.cs" />
   </ItemGroup>
@@ -101,7 +108,8 @@
     <MakeDir Directories="$(DeployDir)" />
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(DeployDir)" ContinueOnError="true" />
     <Copy SourceFiles="@(HausiAsset)" DestinationFolder="$(DeployDir)" ContinueOnError="true" />
-    <Copy SourceFiles="..\core\shared\assets\infusion_table.obj;..\core\shared\assets\infusion_table.png"
+    <Copy Condition="'$(Configuration)' == 'Debug'"
+          SourceFiles="..\core\shared\assets\infusion_table.obj;..\core\shared\assets\infusion_table.png"
           DestinationFolder="$(DeployDir)" ContinueOnError="true" />
   </Target>
 

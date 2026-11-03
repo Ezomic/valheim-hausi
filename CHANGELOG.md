@@ -1,17 +1,12 @@
 # Changelog
 
-## 0.1.0 - unreleased
+## 1.0.0 - unreleased
 
-Links the shared Infusion Table with one proof recipe: a Boar trophy and a Deer Hide make the Meadows relic.
-A proof for testing the table, not a release feature, since it lets a player skip the harder boss fight.
-
-The table now opens Core's own Infusion Table window (LHM-95): two slots filled by right click in the
-inventory, the basin's liquid, a preview of the relic, Infuse and Empty basin. This links Core's new
-`shared/InfusionWindow.cs`, so it needs a Core checkout that has it, and the csproj gains the Unity UI and
-TextMeshPro references that file uses. The Debug-only `hausi` command gains `place <prefab>` (a right click
-on an inventory item) and `window` (what the window shows), and the `hausi-infusion-table` scenario now works
-the table through its window, including emptying the basin, clearing a slot, walking away and the table
-being taken down under an open window.
+The Infusion Table is Debug only. Its proof recipe (a Boar trophy and a Deer Hide make the Meadows relic) lets
+a player skip the harder boss fight, so a release ships no table, no recipe and no `piece_ezomic_infusion`
+prefab, and the csproj links Core's `InfusionTable.cs` and `InfusionWindow.cs` and their Unity UI references in
+Debug only. Debug builds keep it because `scenarios/hausi-infusion-table.txt` tests the shared table and its
+window. Release prep: version 1.0.0, a package icon, and an entry in the packaging scripts.
 
 First version. Trophies finally do something: right click one and it is worn in a slot of its own, hanging
 at your hip where other players can see it, and the creatures of its biome give more while it is. One trophy

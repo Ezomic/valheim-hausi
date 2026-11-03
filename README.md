@@ -59,19 +59,12 @@ trophies at the altar there.
 altar needs a Vandi that has `AskHarder` and `IsHarderSummon` (LHM-87, not published yet). Without one, the slot still boosts drops,
 offerings summon the plain boss, and no relic drops.
 
-### The Infusion Table (proof recipe)
+### The Infusion Table (test builds only)
 
-Hausi carries the suite's shared Infusion Table, built from the Hammer for 10 Wood, 8 Stone and 4 Flint
-beside a workbench. It has one recipe, there only so the table can be tested: a Boar trophy and a Deer Hide,
-with the basin filled, make the Meadows relic. This is a proof and not a feature. The relic normally comes
-from the harder boss fight, so the recipe lets a player skip it, and it is expected to change before release.
-
-The table opens its own window rather than the workbench's recipe list (Core's `InfusionWindow.cs`, LHM-95).
-Right-click the Boar trophy and the Deer Hide in your inventory to put them in the Base and Infusing slots,
-fill the basin by using Resin, a Greydwarf Eye or Guck on the table, and press Infuse. Empty basin tips out
-a wrong fill, and a click on a slot takes its item back out.
-
-The table is a prefab, so a client without the mod cannot join a server that has it.
+Release builds have no Infusion Table. Debug builds link the suite's shared one, with a single recipe that
+exists to test the table and its window (`scenarios/hausi-infusion-table.txt`): a Boar trophy and a Deer Hide,
+with the basin filled, make the Meadows relic. That relic normally comes from the harder boss fight, so the
+recipe would let a player skip it, which is why a release does not ship it.
 
 ## Installing
 

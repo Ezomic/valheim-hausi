@@ -1,0 +1,23 @@
+# Hausi - LHM-98's biome moves: Skeletons and Rancid Remains are Black Forest, the Surtling is Swamp.
+# Read through `hausi biomes`, which asks the same BiomeOverrides-pinned index the sets are built from,
+# and then through the sets themselves, because a pin that reached the index and not the sash would be
+# a trophy that boosts its biome and is missing from its recipe.
+#
+# Needs the cfg carrying the new BiomeOverrides: a saved value beats a new default, so a profile that
+# ran 1.0.0 still says swamp and ashlands, and this file fails at its first check there.
+
+clear
+mod hausi biomes TrophySkeleton TrophySkeletonPoison TrophySurtling TrophyCharredMage TrophyGoblinShaman
+printed biome.TrophySkeleton=blackforest yes
+printed biome.TrophySkeletonPoison=blackforest yes
+printed biome.TrophySurtling=swamp yes
+printed biome.TrophyCharredMage=ashlands yes
+printed biome.TrophyGoblinShaman=plains yes
+
+# Whole lines, as read off game 1.0.21 on 2026-11-03, so a trophy gained or lost anywhere in these three
+# sets fails here rather than as a recipe that quietly asks for something else.
+mod hausi sets
+printed set.blackforest boss=TrophyTheElder count=8 trophies=TrophyBjorn,TrophyFrostTroll,TrophyGreydwarf,TrophyGreydwarfBrute,TrophyGreydwarfShaman,TrophySkeleton,TrophySkeletonPoison,TrophyTheElder yes
+printed set.swamp boss=TrophyBonemass count=9 trophies=TrophyAbomination,TrophyBlob,TrophyBonemass,TrophyDraugr,TrophyDraugrElite,TrophyLeech,TrophySurtling,TrophyWraith,TrophyWrithan yes
+printed set.ashlands boss=TrophyFader count=10 trophies=TrophyAsksvin,TrophyBlob_Lava,TrophyBonemawSerpent,TrophyCharredArcher,TrophyCharredMage,TrophyCharredMelee,TrophyFader,TrophyFallenValkyrie,TrophyMorgen,TrophyVolture yes
+clear

@@ -13,9 +13,10 @@ namespace Hausi
     /// the hash of these names, so renaming one destroys every copy in the world and in every pack.
     /// The display names are not part of that and are free to change.
     ///
-    /// <b>Seven, not nine, and not by choice of list.</b> A sash needs a boss trophy. The Ocean has no
-    /// boss and the Frozen King drops no trophy, so neither gets a recipe, and their trophies still
-    /// work one at a time. The prefabs are registered regardless of what this world's tables say,
+    /// <b>Eight, not nine.</b> A sash needs a boss trophy. The Ocean has no boss, so it gets no recipe
+    /// and its trophies still work one at a time. The Frozen King drops no trophy either, and the Deep
+    /// North was left out on that rule until LHM-98 gave it his Sacrificial Blood in its place, through
+    /// BossItems. The prefabs are registered regardless of what this world's tables say,
     /// because a host changing BossBiomes must not be able to delete sashes that are already in packs.
     ///
     /// <b>The upgrade is the item's quality, vanilla's own path.</b> One recipe holds both prices.
@@ -51,7 +52,14 @@ namespace Hausi
             { "Plains", "Plains" },
             { "Mistlands", "Mistlands" },
             { "Ashlands", "Ashlands" },
+            { "DeepNorth", "Deep North" },
         };
+
+        /// <summary>The material group the token and its clasp are modelled in, which is what glows.</summary>
+        private const string TokenGroup = "bone";
+
+        /// <summary>Per sash prefab, the submesh of its token. Filled as each sash is built.</summary>
+        private static readonly Dictionary<string, int> TokenSubmesh = new Dictionary<string, int>();
 
         private static ObjectDB _writtenTo;
         private static int _writtenGeneration = -1;
@@ -118,6 +126,12 @@ namespace Hausi
             return quality >= 2 ? HausiConfig.UpgradedChance.Value : HausiConfig.SashChance.Value;
         }
 
+        /// <summary>The submesh of a sash's token, or -1 for anything that is not a built sash.</summary>
+        internal static int TokenSubmeshOf(string prefabName)
+        {
+            return prefabName != null && TokenSubmesh.TryGetValue(prefabName, out int index) ? index : -1;
+        }
+
         /// <summary>The relic prefab of a biome, or null. Biome in the index's spelling.</summary>
         internal static GameObject RelicOf(string biome)
         {
@@ -136,6 +150,8 @@ namespace Hausi
         {
             GameObject clone = BuildItem(Prefix + key, "sash_" + key.ToLowerInvariant(), out ModelData model);
             if (clone == null) return null;
+
+            TokenSubmesh[Prefix + key] = Array.IndexOf(model.Groups, TokenGroup);
 
             ItemDrop.ItemData.SharedData shared = clone.GetComponent<ItemDrop>().m_itemData.m_shared;
             shared.m_name = title + " Sash";
@@ -278,6 +294,10 @@ namespace Hausi
             var resources = new List<Piece.Requirement>();
             foreach (ItemDrop trophy in set.Trophies)
                 resources.Add(new Piece.Requirement { m_resItem = trophy, m_amount = 1, m_amountPerLevel = 0, m_recover = false });
+
+            // A BossItems stand-in is no trophy, so it is not among the ones above.
+            if (!set.Trophies.Contains(set.BossTrophy))
+                resources.Add(new Piece.Requirement { m_resItem = set.BossTrophy, m_amount = 1, m_amountPerLevel = 0, m_recover = false });
 
             resources.Add(new Piece.Requirement { m_resItem = relic, m_amount = 0, m_amountPerLevel = 1, m_recover = false });
             resources.Add(new Piece.Requirement { m_resItem = material, m_amount = 0, m_amountPerLevel = amount, m_recover = false });

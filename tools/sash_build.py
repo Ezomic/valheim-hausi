@@ -75,6 +75,24 @@ def spikes(at, mat):
         taper(0.022, 0.003, length, (x + dx, y, z + dz + length * 0.3), mat, sides=5, rot_y=turn, tilt=4.0)
 
 
+def ice(at, mat):
+    """Deep North: three ice crystals, each a six-sided prism with a point, the big one upright.
+
+    Six sides on purpose, against the odd-sided rule: a crystal is meant to show a flat face, and
+    that facet is what tells it from the Ashlands' round spikes at a glance. A placeholder until
+    the real token is drawn.
+    """
+    x, y, z = at
+    for dx, turn, wide, tall in ((0.0, 4.0, 0.026, 0.1), (-0.032, -30.0, 0.018, 0.065), (0.03, 28.0, 0.017, 0.06)):
+        taper(wide, wide * 0.92, tall, (x + dx, y, z - 0.03), mat, sides=6, rot_y=turn, tilt=3.0)
+        # Cones are placed by their centre, so the point sits half the prism plus most of half itself
+        # along the prism's axis: that leaves the two overlapping, never touching end to end.
+        axis = math.radians(turn)
+        reach = tall * 0.5 + wide * 1.6 * 0.4
+        taper(wide * 0.94, 0.003, wide * 1.6, (x + dx + math.sin(axis) * reach, y,
+                                               z - 0.03 + math.cos(axis) * reach), mat, sides=6, rot_y=turn, tilt=3.0)
+
+
 BIOMES = {
     "meadows": antler,
     "blackforest": root_knot,
@@ -83,6 +101,7 @@ BIOMES = {
     "plains": tusk,
     "mistlands": plates,
     "ashlands": spikes,
+    "deepnorth": ice,
 }
 
 

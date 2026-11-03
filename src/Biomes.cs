@@ -39,6 +39,11 @@ namespace Hausi
         {
             internal string Biome;
             internal readonly List<ItemDrop> Trophies = new List<ItemDrop>();
+
+            /// <summary>
+            /// The boss's trophy, which is also in Trophies, or for a boss with none the BossItems
+            /// stand-in, which is not: it is no trophy, so it can be worn by nobody and blocks nothing.
+            /// </summary>
             internal ItemDrop BossTrophy;
         }
 
@@ -53,6 +58,7 @@ namespace Hausi
             // ingredients for the whole visit.
             HausiConfig.BossBiomes.SettingChanged += (sender, args) => Forget();
             HausiConfig.BiomeOverrides.SettingChanged += (sender, args) => Forget();
+            HausiConfig.BossItems.SettingChanged += (sender, args) => Forget();
 
             // Read only when a recipe is written, so it only needs the recipes to notice.
             HausiConfig.UpgradeMaterials.SettingChanged += (sender, args) => Generation++;
@@ -196,6 +202,9 @@ namespace Hausi
                 if (set.Trophies.Contains(trophy)) set.BossTrophy = trophy;
             }
 
+            foreach (BiomeSet set in sets.Values)
+                if (set.BossTrophy == null) set.BossTrophy = BossItem(set.Biome);
+
             HausiPlugin.Log.LogInfo("Biome sets built: " + Describe(sets));
 
             return sets;
@@ -210,6 +219,25 @@ namespace Hausi
                           + (set.BossTrophy != null ? set.BossTrophy.gameObject.name : "none"));
 
             return string.Join("; ", parts.ToArray());
+        }
+
+        /// <summary>The first BossItems entry for a biome, resolved, or null.</summary>
+        private static ItemDrop BossItem(string biome)
+        {
+            foreach (string entry in (HausiConfig.BossItems.Value ?? "").Split(','))
+            {
+                string[] pair = entry.Split(':');
+                if (pair.Length != 2 || pair[0].Trim().ToLowerInvariant() != biome) continue;
+
+                GameObject prefab = ObjectDB.instance.GetItemPrefab(pair[1].Trim());
+                if (prefab != null && prefab.TryGetComponent(out ItemDrop item)) return item;
+
+                HausiPlugin.Log.LogWarning("BossItems names " + pair[1].Trim() + " for " + biome
+                                           + ", which is no item, so that biome has no sash recipe.");
+                return null;
+            }
+
+            return null;
         }
 
         /// <summary>The biome a boss key belongs to in BossBiomes, or null. BiomeIndex asks this too.</summary>

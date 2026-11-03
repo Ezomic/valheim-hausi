@@ -58,6 +58,8 @@ namespace Hausi
 
         internal static void Keep()
         {
+            WarnMissingAssets();
+
             foreach (KeyValuePair<string, string> biome in Display)
             {
                 string key = biome.Key;
@@ -66,6 +68,33 @@ namespace Hausi
                 Prefabs.Keep(Prefix + key, () => BuildSash(key, title), item: true);
                 Prefabs.Keep(RelicPrefix + key, () => BuildRelic(key, title), item: true);
             }
+        }
+
+        /// <summary>
+        /// A sash or relic with no .obj beside the dll is never registered, and with it no recipe is
+        /// written, so one line at load names every file that is missing and what it costs.
+        /// </summary>
+        private static void WarnMissingAssets()
+        {
+            string directory = Path.GetDirectoryName(typeof(Sashes).Assembly.Location);
+            var models = new List<string>();
+            var icons = new List<string>();
+
+            foreach (string key in Display.Keys)
+                foreach (string file in new[] { "sash_" + key.ToLowerInvariant(), "relic_" + key.ToLowerInvariant() })
+                {
+                    if (!File.Exists(Path.Combine(directory, file + ".obj"))) models.Add(file + ".obj");
+                    if (!File.Exists(Path.Combine(directory, file + ".png"))) icons.Add(file + ".png");
+                }
+
+            if (models.Count > 0)
+                HausiPlugin.Log.LogWarning("Missing beside the dll in " + directory + ": " + string.Join(", ", models.ToArray())
+                                           + ". Without its model a sash or relic is not registered and its sash recipe is never written. "
+                                           + "Reinstall with every .obj and .png from the package.");
+
+            if (icons.Count > 0)
+                HausiPlugin.Log.LogWarning("Missing beside the dll in " + directory + ": " + string.Join(", ", icons.ToArray())
+                                           + ". Those items fall back to the donor's icon.");
         }
 
         internal static bool Is(ItemDrop.ItemData item)

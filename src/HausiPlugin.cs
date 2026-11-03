@@ -76,7 +76,9 @@ namespace Hausi
             _harmony.PatchAll(typeof(DropBoost));
             _harmony.PatchAll(typeof(Worn));
             _harmony.PatchAll(typeof(Altar));
+#if DEBUG
             _harmony.PatchAll(typeof(DevConsole));
+#endif
 
             // The startup line every mod in the suite writes. It is how a log answers "which
             // build of what is actually loaded" without anyone guessing.

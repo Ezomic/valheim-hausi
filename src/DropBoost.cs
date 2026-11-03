@@ -41,6 +41,7 @@ namespace Hausi
             internal readonly List<string> Blocked = new List<string>();
         }
 
+#if DEBUG
         internal static Decision Last;
 
         /// <summary>Units rolled and extras won since the last reset, for checking a chance.</summary>
@@ -48,6 +49,10 @@ namespace Hausi
 
         /// <summary>Relics added to a drop list since the last reset.</summary>
         internal static int Relics;
+#endif
+
+        private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Character, object> RelicGiven =
+            new System.Runtime.CompilerServices.ConditionalWeakTable<Character, object>();
 
         private static AccessTools.FieldRef<Character, HitData> _lastHit;
         private static bool _bound, _warned;
@@ -106,7 +111,9 @@ namespace Hausi
                 Killer = killer.GetLong(ZDOVars.s_playerID),
             };
 
+#if DEBUG
             Last = decision;
+#endif
 
             // Biome "none" matches nothing, even another "none". A location creature and the
             // trophy of a location creature have no biome in common: they have no biome.
@@ -157,8 +164,14 @@ namespace Hausi
             GameObject relic = Sashes.RelicOf(Biomes.BiomeOfBossKey(character.m_defeatSetGlobalKey));
             if (relic == null) return -1;
 
+            // A second list made for the same death must not carry a second relic.
+            if (RelicGiven.TryGetValue(character, out object _)) return -1;
+            RelicGiven.Add(character, null);
+
             list.Add(new KeyValuePair<GameObject, int>(relic, 1));
+#if DEBUG
             Relics++;
+#endif
             return list.Count - 1;
         }
 
@@ -174,8 +187,10 @@ namespace Hausi
             for (int i = 0; i < units; i++)
                 if (UnityEngine.Random.value < chance) won++;
 
+#if DEBUG
             Units += units;
             Extras += won;
+#endif
 
             return won;
         }

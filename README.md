@@ -67,6 +67,10 @@ Needs BepInEx. Nothing else. Through a mod manager it is one install. By hand, p
 Then start the game once and quit. That first run writes the config file. It does not exist before the mod
 has loaded, which is the usual reason people think it is broken.
 
+**Uninstalling leaves a stale worn mark.** A trophy or sash that was worn when you removed Hausi keeps its
+checkmark in the save, and the game treats a checked item as worn gear, so on death it stays in your pack
+instead of going to the grave. Take it off before uninstalling.
+
 **Prefab names are permanent.** Removing Hausi from a server deletes every sash and relic in every pack and
 chest that holds one the next time it loads. Trophies are vanilla and are safe.
 
@@ -88,6 +92,17 @@ If [Core](https://github.com/Ezomic/valheim-core) is installed, this mod registe
 the host's settings apply to everyone connected to it, in memory only - your own config file is never
 written to and comes back the moment you disconnect. Where a trophy hangs on you and your logging are yours
 and stay yours. Without Core the mod still runs; what is lost is the enforcement.
+
+**Trust model.** What a player wears, and its quality, is written by that player's own client and read by
+whichever machine owns the creature. The server has no copy of a pack to check it against, so a modified
+client can claim a sash it does not own. The mod only accepts a trophy or one of its own sashes there and
+only boosts that player's own kills, which is the whole of what a cheater gains.
+
+## Building
+
+The project compiles shared source from the sibling [Core](https://github.com/Ezomic/valheim-core) repo, so
+`core` must be cloned beside this one (`..\core`) before `dotnet build` works. Release builds carry no
+console command; the `hausi` command that the scenarios use exists in Debug builds only.
 
 ## Bugs and ideas
 

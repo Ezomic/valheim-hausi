@@ -1,0 +1,100 @@
+#! partner paired-hausi-killer
+#! nostage
+# Hausi, TWO CLIENTS: the side wearing nothing. See paired-hausi-killer for why.
+
+clear
+god
+ghost
+waitfor rig_hausi_ready 300
+partner 6 2
+wait 3
+mod hausi
+printed worn=none yes
+key rig_hausi_watching
+
+# Round 1: A spawned them, this side strikes. Its bare hands must not borrow A's trophy.
+waitfor rig_hausi_r1 200
+wait 2
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+wait 2
+key rig_hausi_r1_done
+
+# Round 2: this side spawns them, A strikes in its trophy. This machine runs the deaths.
+waitfor rig_hausi_r2 200
+mod hausi stats reset
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+wait 2
+key rig_hausi_r2_spawned
+waitfor rig_hausi_r2_done 200
+wait 2
+mod hausi stats
+printed ratio=1.000 yes
+printed units=0 no
+mod hausi last
+printed worn=TrophyBoar yes
+printed wornbiome=meadows yes
+printed chance=1 yes
+dropped TrophyBoar 0 40
+
+# What A wears, seen from here.
+waitfor rig_hausi_look 120
+wait 2
+mod hausi look
+printed look.other=Hips yes
+screenshot
+key rig_hausi_seen_trophy
+waitfor rig_hausi_look2 120
+wait 2
+mod hausi look
+printed look.other=Spine2 yes
+screenshot
+key rig_hausi_done
+clear

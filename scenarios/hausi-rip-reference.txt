@@ -1,0 +1,4 @@
+# Hausi - the reference rips the worn model was measured against. No assertions beyond the rip
+# resolving. Run it when a game update makes the trinket joint or the trophies' scale doubtful.
+#! nostage
+rip TrinketIronHealth TrinketIronStamina TrinketBronzeHealth TrophyBoar TrophyDeer TrophyNeck TrophyEikthyr TrophyTheElder TrophyForestTroll Player

@@ -1,0 +1,97 @@
+# Hausi - the control for hausi-drops-trophy. Nothing worn, so nothing is rolled and the trophy
+# drops. Boar's trophy runs on the game's pseudo-random counter at 10%, which guarantees one within
+# about 20 tries, so 40 kills cannot come up empty. This is what makes "0 trophies" in the other
+# file mean something: same kills, same prefab, one difference.
+
+clear
+god
+ghost
+wait 2
+sweep
+mod hausi stats reset
+
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+wait 8
+mod hausi stats
+printed units=0 extras=0 yes
+dropped TrophyBoar 1+
+sweep

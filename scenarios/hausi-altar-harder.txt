@@ -1,0 +1,96 @@
+#! nostage
+# Hausi - offering at a boss's altar in that biome's sash. NEEDS a Vandi with AskHarder and
+# IsHarderSummon. hausi-no-vandi is the same altar without them.
+#
+# `appears` and not a fixed wait: this altar takes 12s by its own account, and a game running slowly in
+# the background took longer, which read as the mod not summoning.
+#
+# Every count here looks 80 m out. The altar puts its boss up to 40 m from its spawn point, and a
+# check at the default 20 m read "no relic" for a relic lying 30 m away.
+#
+# The one relic is checked on the ground, after the boss's HardAntler has landed: a ragdoll spills its
+# loot seconds after the death, and a count taken before that reads 0 whether a relic is coming or not.
+# The rounds wanting none read `relics=` instead, which the kill has already settled by the time `kill`
+# returns. The ground cannot answer those: sweep stops short of 80 m, so round one's relic is still lying
+# there, and a count of 0 before the spill would pass for the wrong reason anyway.
+#
+# What it proves: the boss comes one star above the record, because Vandi was asked and Vandi's stars
+# are the only difficulty there is. It drops one relic, not doubled by the very sash that asked for
+# it. The sash is not consumed. An offering without the sash, or in the wrong biome's, asks for
+# nothing and gets no relic, and the record is still Vandi's own.
+
+clear
+god
+ghost
+unkey vandi_p_$player_defeated_eikthyr
+unkey vandi_harder_defeated_eikthyr
+wait 1
+# In the Meadows, because Utangard refuses this altar anywhere the group has not earned, and the file
+# before this one may have left the character anywhere.
+wait 3
+biome Meadows
+wait 3
+location Eikthyrnir
+wait 3
+banish Eikthyr 80
+sweep
+
+# In the sash, no kills on record: a plain Eikthyr would be level 1.
+give HausiSash_Meadows:1
+give TrophyDeer:2
+mod hausi wear HausiSash_Meadows
+wait 2
+mod hausi stats reset
+offer TrophyDeer
+appears Eikthyr 90 80
+wait 3
+level Eikthyr 2
+carrying HausiSash_Meadows 1
+kill Eikthyr
+mod hausi floor HardAntler 80
+until 45 any=yes
+mod hausi floor HausiRelic_Meadows 80
+until 10 total=1
+mod hausi floor TrophyEikthyr 80
+printed total=0 yes
+mod hausi last
+printed last=Eikthyr yes
+printed chance=0.5 yes
+keyis vandi_p_$player_defeated_eikthyr 1
+sweep
+strip HausiRelic_Meadows,HardAntler,TrophyEikthyr
+wait 1
+
+# Taken off: one kill on record is one star, level 2, and no relic.
+mod hausi wear HausiSash_Meadows
+wait 2
+give TrophyDeer:2
+offer TrophyDeer
+appears Eikthyr 90 80
+wait 3
+level Eikthyr 2
+kill Eikthyr
+mod hausi stats
+printed relics=1 yes
+keyis vandi_p_$player_defeated_eikthyr 2
+sweep
+strip HardAntler,TrophyEikthyr
+wait 1
+
+# The wrong biome's sash asks for nothing: two kills is two stars, level 3, and no relic of any kind.
+give HausiSash_Swamp:1
+give TrophyDeer:2
+mod hausi wear HausiSash_Swamp
+wait 2
+offer TrophyDeer
+appears Eikthyr 90 80
+wait 3
+level Eikthyr 3
+kill Eikthyr
+mod hausi stats
+printed relics=1 yes
+sweep
+mod hausi wear HausiSash_Swamp
+wait 2
+unkey vandi_p_$player_defeated_eikthyr
+clear

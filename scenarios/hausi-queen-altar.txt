@@ -1,0 +1,86 @@
+#! nostage
+# Hausi - the Queen's altar, in the Mistlands sash. NEEDS a Vandi with AskHarder and IsHarderSummon.
+#
+# The room dvergr_new_bossroom_ENTRANCE02 holds a real OfferingBowl, offeraltar_queen: SeekerQueen for 3
+# TrophySeekerBrute, four spawn points, read off the prefab on game 1.0.21. She stands there the first
+# time, and this is how she comes back. So the sash's altar rule covers her with nothing added, and
+# this file is the proof, Utangard included: an offering it refuses must cost nothing and ask nothing.
+#
+# Every reach here is 5100 m because the room is not near anything you can see: the dungeon generates at
+# y 5066 above its entrance, with the bowl live and the player standing on the surface. A hand step
+# covers standing in the room.
+#
+# The world's own Queen is banished first, so that the one measured is the one this file summoned.
+
+clear
+god
+ghost
+unkey defeated_goblinking
+unkey utangard_open_defeated_goblinking
+unkey wither_open_defeated_goblinking
+unkey utangard_first_defeated_goblinking
+unkey utangard_p_$player_defeated_goblinking
+unkey vandi_p_$player_defeated_queen
+unkey vandi_harder_defeated_queen
+wait 1
+wait 3
+biome Mistlands
+wait 3
+location Mistlands_DvergrBossEntrance1 30
+wait 5
+banish SeekerQueen 5100
+give HausiSash_Mistlands:1
+give TrophySeekerBrute:9
+mod hausi wear HausiSash_Mistlands
+wait 2
+mod hausi stats reset
+
+# The group has not earned the Mistlands: Utangard refuses, nothing is taken, nothing is asked for.
+centre The land will not answer no
+offer TrophySeekerBrute 5100
+centre The land will not answer an offering here yes
+wait 15
+count SeekerQueen 0 5100
+carrying TrophySeekerBrute 9
+
+# Earned, with the sash off. Nothing is on record, so she comes plain, and level 1 here is also what
+# proves the refused offering above asked for nothing: an ask left over would make her level 2.
+key utangard_open_defeated_goblinking
+wait 1
+mod hausi wear HausiSash_Mistlands
+wait 2
+offer TrophySeekerBrute 5100
+centre The land will not answer no
+appears SeekerQueen 90 5100
+wait 3
+level SeekerQueen 1 5100
+kill SeekerQueen 5100
+mod hausi stats
+printed relics=0 yes
+keyis vandi_p_$player_defeated_queen 1
+
+# In the sash: one kill on record is one star, and the sash is one more, level 3.
+mod hausi wear HausiSash_Mistlands
+wait 2
+offer TrophySeekerBrute 5100
+appears SeekerQueen 90 5100
+wait 3
+level SeekerQueen 3 5100
+carrying HausiSash_Mistlands 1
+carrying TrophySeekerBrute 3
+kill SeekerQueen 5100
+mod hausi stats
+printed relics=1 yes
+mod hausi last
+printed last=SeekerQueen yes
+printed creaturebiome=mistlands yes
+printed chance=0.5 yes
+keyis vandi_p_$player_defeated_queen 2
+mod hausi floor HausiRelic_Mistlands 5100
+until 10 total=1
+sweep
+mod hausi wear HausiSash_Mistlands
+wait 2
+unkey vandi_p_$player_defeated_queen
+unkey utangard_open_defeated_goblinking
+clear

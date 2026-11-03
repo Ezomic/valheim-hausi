@@ -1,0 +1,25 @@
+# Hausi - what is worn comes back after a load. `hausi reload` writes the pack out through the real save
+# format, reads it back, and calls EquipInventoryItems, in the order Player.Load does. A real restart is
+# in the hand steps: a scenario cannot survive one, and a -devkit-quit run leaves no inventory on disk,
+# which was compared with Hausi removed and is the same there.
+clear
+god
+ghost
+give TrophyDeer:3
+mod hausi wear TrophyDeer
+wait 2
+mod hausi
+printed worn=TrophyDeer yes
+mod hausi reload
+wait 2
+carrying TrophyDeer 3
+mod hausi
+printed worn=TrophyDeer yes
+printed stack=3 yes
+printed marks=1 yes
+printed published=yes yes
+mod hausi look
+printed look.self=Hips yes
+mod hausi wear TrophyDeer
+wait 2
+clear

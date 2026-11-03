@@ -1,0 +1,20 @@
+# Hausi - death while wearing. The trophy goes to the grave with everything else: a mark left on it
+# would keep it in the pack, because MoveInventoryToGrave leaves m_equipped items behind.
+
+clear
+god off
+ghost off
+give TrophyBoar:3
+wait 1
+mod hausi wear TrophyBoar
+wait 2
+mod hausi
+printed worn=TrophyBoar yes
+die
+wait 12
+mod hausi
+printed worn=none yes
+printed published=no yes
+carrying TrophyBoar 0
+god
+ghost

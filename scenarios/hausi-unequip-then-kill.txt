@@ -1,0 +1,118 @@
+# Hausi - taking it off really takes the bonus and the block away, on the next kill. Each kill reads
+# the killer's ZDO, so a slot that cleared locally and left the ZDO stale fails this.
+
+clear
+god
+ghost
+give TrophyBoar:1
+mod hausi wear TrophyBoar
+wait 2
+sweep
+mod hausi stats reset
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+wait 2
+mod hausi stats
+printed units=0 no
+mod hausi wear TrophyBoar
+wait 2
+mod hausi
+printed published=no yes
+mod hausi stats reset
+sweep
+wait 1
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+wait 8
+mod hausi stats
+printed units=0 extras=0 yes
+dropped TrophyBoar 1+
+sweep

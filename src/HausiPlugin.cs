@@ -1,22 +1,25 @@
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using BepInEx;
 using BepInEx.Bootstrap;
 using BepInEx.Logging;
 using Ezomic.Core;
+using Ezomic.Shared;
 using HarmonyLib;
 
 namespace Hausi
 {
     /// <summary>
-    /// Hausi. One sentence saying what the mod does, then a paragraph saying why it is
-    /// worth having - the design argument, not the feature list. That paragraph is the thing
-    /// future-you reads first.
+    /// Hausi. Wear a trophy like gear and the creatures of its biome give more, at the price of
+    /// never dropping that trophy while you do.
     ///
-    /// Say here whether the mod is client-side, and say it in terms of where the work
-    /// happens rather than by habit. "Client-side" means every effect is computed by the
-    /// owning client off state it already has. The moment a decision reads another player's
-    /// progress, writes a shared ZDO, or registers a prefab, it is not client-side any more
-    /// and Requirement.Everyone below is load-bearing.
+    /// Trophies are the one thing every player carries a chest of and nothing asks for. This gives
+    /// them a job without a new resource or a new menu, and the block is what keeps it honest: the
+    /// bonus is paid for in the thing that makes up the sash, so a player has to choose between
+    /// farming a biome and finishing its set.
+    ///
+    /// Not client-side, and Requirement.Everyone below is load-bearing. A creature's owner decides
+    /// its drops by reading the killer's ZDO, and sashes are prefabs.
     ///
     /// There is deliberately no BepInProcess attribute. A dedicated server runs
     /// valheim_server.exe, and Core's gate only refuses on the server side of RPC_PeerInfo -
@@ -61,15 +64,41 @@ namespace Hausi
 
             TryRegisterWithCore();
 
-            // PatchAll over a named type, never the whole assembly. A bare PatchAll() walks
+            Prefabs.Log = Log;
+            Biomes.Wire();
+            Sashes.Keep();
+
+            // PatchAll over named types, never the whole assembly. A bare PatchAll() walks
             // every type in the DLL, so a half-written patch class in another file goes live
             // the moment it compiles.
             _harmony = new Harmony(PluginGuid);
-            _harmony.PatchAll(typeof(HausiPatches));
+            _harmony.PatchAll(typeof(Slot));
+            _harmony.PatchAll(typeof(DropBoost));
+            _harmony.PatchAll(typeof(Worn));
+            _harmony.PatchAll(typeof(Altar));
+#if DEBUG
+            _harmony.PatchAll(typeof(DevConsole));
+#endif
 
             // The startup line every mod in the suite writes. It is how a log answers "which
             // build of what is actually loaded" without anyone guessing.
             Log.LogInfo(PluginName + " " + PluginVersion + " by " + PluginAuthor + " - ready.");
+        }
+
+        private void Update()
+        {
+            Prefabs.Tick();
+            Biomes.Tick();
+            Sashes.Tick();
+            Slot.Tick();
+        }
+
+        private static readonly HashSet<string> Said = new HashSet<string>();
+
+        /// <summary>A warning a frame loop would otherwise repeat sixty times a second.</summary>
+        internal static void LogOnce(string line)
+        {
+            if (Said.Add(line)) Log.LogWarning(line);
         }
 
         /// <summary>
@@ -116,15 +145,12 @@ namespace Hausi
 
             // Registering already absorbs the whole config file, so this is a formality now.
             // It is still worth writing: naming an entry here is saying out loud that the
-            // host decides it. Keybinds are excluded by Core itself - a host taking away
-            // someone's keys for the evening is the kind of sync that gets a mod uninstalled.
+            // host decides it.
             Suite.Sync(HausiConfig.Enabled);
 
-            // If the mod reads a data file that decides what it does, hash it too. The gate
-            // catches two ends on different builds; it cannot catch two ends running the
-            // same build over different text unless it is told.
-            //
-            //     Suite.Data(File.ReadAllText(path));
+            // Where a trophy hangs desyncs nothing and is nobody's rule, and neither is a log.
+            Suite.Local(HausiConfig.WornJoint, HausiConfig.WornSize, HausiConfig.WornRight,
+                HausiConfig.WornUp, HausiConfig.WornForward, HausiConfig.WornTurn, HausiConfig.Verbose);
         }
 
         private void OnDestroy()

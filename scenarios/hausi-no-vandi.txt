@@ -1,0 +1,78 @@
+#! nostage
+# Hausi - with no Vandi, or a Vandi without AskHarder. The offering is unavailable and nothing else is:
+# the same altar in the same sash gives a plain boss and no relic, and the slot still boosts.
+
+clear
+god
+ghost
+# In the Meadows, because Utangard refuses this altar anywhere the group has not earned, and the file
+# before this one may have left the character anywhere.
+wait 3
+biome Meadows
+wait 3
+location Eikthyrnir
+wait 3
+banish Eikthyr 80
+sweep
+give HausiSash_Meadows:1
+give TrophyDeer:2
+mod hausi wear HausiSash_Meadows
+wait 2
+mod hausi
+printed worn=HausiSash_Meadows yes
+mod hausi stats reset
+offer TrophyDeer
+appears Eikthyr 90 80
+wait 3
+level Eikthyr 1
+kill Eikthyr
+mod hausi stats
+printed relics=0 yes
+mod hausi stats reset
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+spawn Boar
+kill Boar 12
+wait 4
+mod hausi stats within 0.25 0.75
+printed within=yes yes
+sweep
+mod hausi wear HausiSash_Meadows
+wait 2
+clear

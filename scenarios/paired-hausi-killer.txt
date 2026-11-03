@@ -1,0 +1,124 @@
+#! partner paired-hausi-watcher
+#! nostage
+# Hausi, TWO CLIENTS: the side wearing the trophy. The other half is paired-hausi-watcher, and its
+# character wears nothing. Neither proves anything alone.
+#
+# The isolation rule is that the last blow decides, whoever owns the creature. A creature belongs to
+# the machine that made it, so each round has one side spawn and the other strike:
+#
+#   Round 1: this side spawns, the watcher strikes. This machine runs the deaths and wears the trophy,
+#   and must grant NOTHING, because the blow was not its own. Code reading the local slot passes every
+#   single-player scenario and fails here. Trophies drop.
+#   Round 2: the watcher spawns, this side strikes. The watcher's machine runs the deaths, wears
+#   nothing, and must still grant the bonus and the block, read off this player's ZDO.
+#
+# Round 2's numbers are on the watcher's side, in its ledger.
+#
+# RUN WITH TrophyChance = 1 IN THE SERVER'S CFG and the default 0.25 on both clients. That is the
+# differing-cfg case: Core imposes the host's value in memory, and a ratio of exactly 1.000 on a client
+# can only come from the host's file. At 0.25 this file fails at that line.
+
+unkey rig_hausi_ready
+unkey rig_hausi_r1
+unkey rig_hausi_r1_done
+unkey rig_hausi_r2
+unkey rig_hausi_r2_done
+unkey rig_hausi_done
+clear
+god
+ghost
+wait 3
+give TrophyBoar:1
+mod hausi wear TrophyBoar
+wait 2
+mod hausi
+printed worn=TrophyBoar yes
+printed published=yes yes
+key rig_hausi_ready
+waitfor rig_hausi_watching 300
+
+# Round 1: spawned here, struck there.
+sweep
+mod hausi stats reset
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+spawn Boar
+wait 2
+key rig_hausi_r1
+waitfor rig_hausi_r1_done 200
+wait 8
+mod hausi stats
+printed units=0 extras=0 yes
+dropped TrophyBoar 1+ 40
+sweep
+wait 2
+
+# Round 2: spawned there, struck here.
+key rig_hausi_r2
+waitfor rig_hausi_r2_spawned 120
+wait 3
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+kill Boar 40
+wait 8
+key rig_hausi_r2_done
+mod hausi stats
+printed units=0 extras=0 yes
+dropped TrophyBoar 0 40
+sweep
+
+# So the watcher can look: the trophy, then the sash, as the other machine draws them.
+key rig_hausi_look
+waitfor rig_hausi_seen_trophy 120
+give HausiSash_Meadows:1
+mod hausi wear HausiSash_Meadows
+wait 2
+key rig_hausi_look2
+waitfor rig_hausi_done 120
+mod hausi wear HausiSash_Meadows
+wait 2
+clear

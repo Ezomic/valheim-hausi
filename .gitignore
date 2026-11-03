@@ -23,3 +23,6 @@ build/
 # Preview renders. Regenerable from the build script, and a diff of binaries hides the one
 # that was actually worked on. Hand-modelled .obj / .col / .png assets ARE committed.
 renders/
+
+# Blender runs the design scripts as Python and leaves its bytecode behind.
+__pycache__/

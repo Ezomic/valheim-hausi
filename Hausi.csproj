@@ -18,7 +18,7 @@
     <Authors>Robbin Thijssen</Authors>
     <Company>Thijssen Software</Company>
     <Product>Hausi</Product>
-    <Description>Wear trophies in a hunter's sash and the creatures of their biome give more.</Description>
+    <Description>Wear a trophy like gear and the creatures of its biome give more.</Description>
     <Copyright>Copyright (c) 2026 Robbin Thijssen</Copyright>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
@@ -53,10 +53,19 @@
     -->
     <Reference Include="assembly_valheim"><HintPath>$(ManagedDir)\assembly_valheim.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="assembly_utils"><HintPath>$(ManagedDir)\assembly_utils.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="assembly_guiutils"><HintPath>$(ManagedDir)\assembly_guiutils.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="UnityEngine"><HintPath>$(ManagedDir)\UnityEngine.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="UnityEngine.CoreModule"><HintPath>$(ManagedDir)\UnityEngine.CoreModule.dll</HintPath><Private>false</Private></Reference>
+    <!-- The donor item's pick-me-up sparkle is stripped from every sash and relic. -->
+    <Reference Include="UnityEngine.ParticleSystemModule"><HintPath>$(ManagedDir)\UnityEngine.ParticleSystemModule.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="BepInEx"><HintPath>$(BepInExCore)\BepInEx.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="0Harmony"><HintPath>$(BepInExCore)\0Harmony.dll</HintPath><Private>false</Private></Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Shared source, compiled in rather than called in Core's DLL: see each file's header. -->
+    <Compile Include="..\core\shared\BiomeIndex.cs" Link="shared\BiomeIndex.cs" />
+    <Compile Include="..\core\shared\Prefabs.cs" Link="shared\Prefabs.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -68,15 +77,10 @@
     </ProjectReference>
   </ItemGroup>
 
-  <!--
-    Assets, if the mod has any. Uncomment and drop .obj / .col / .png into assets\; load them
-    relative to Path.GetDirectoryName(typeof(X).Assembly.Location). Rejected design variants
-    belong in assets\variants\ so they are not copied - that folder is not matched here.
-
+  <!-- Rejected design variants are in assets\variants\ so they are not copied. -->
   <ItemGroup>
-    <HausiAsset Include="assets\*.obj;assets\*.col;assets\*.png" />
+    <HausiAsset Include="assets\*.obj;assets\*.png" />
   </ItemGroup>
-  -->
 
   <!--
     ContinueOnError, because the game holds the DLL open while it is running and a failed
@@ -87,7 +91,7 @@
   <Target Name="Deploy" AfterTargets="Build" Condition="Exists('$(ProfileDir)\BepInEx\plugins')">
     <MakeDir Directories="$(DeployDir)" />
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(DeployDir)" ContinueOnError="true" />
-    <!-- <Copy SourceFiles="@(HausiAsset)" DestinationFolder="$(DeployDir)" ContinueOnError="true" /> -->
+    <Copy SourceFiles="@(HausiAsset)" DestinationFolder="$(DeployDir)" ContinueOnError="true" />
   </Target>
 
 </Project>

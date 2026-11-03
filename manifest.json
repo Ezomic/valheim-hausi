@@ -2,7 +2,7 @@
     "name":  "Hausi",
     "author":  "Robbin Thijssen",
     "version_number":  "0.1.0",
-    "description":  "Wear trophies in a hunter's sash and the creatures of their biome give more.",
+    "description":  "Wear a trophy like gear and the creatures of its biome give more.",
     "dependencies":  [
                          "denikson-BepInExPack_Valheim-5.4.2350"
                      ],

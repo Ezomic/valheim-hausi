@@ -1,10 +1,14 @@
 # Hausi - the Infusion Table proof recipe: a Boar trophy and a Deer Hide make the Meadows relic, and only
-# at a table whose basin is full.
+# at a table whose basin is full, worked through the table's own window (LHM-95).
 #
 # Refused with an empty basin, so the liquid gate is what is under test and not a missing item. The
 # basin is filled with Resin through `mod hausi fill`, which is InfusionBasin.UseItem on the nearest
 # table (no Devkit step uses an item on a placed piece). The hover text is the table's own reading of
 # its ZDO, so it is how the basin is asserted, empty and full.
+#
+# The ingredients go into the window's slots with `mod hausi place`, which is the right click in the
+# inventory that does it for a player, and the window is read back with `mod hausi window`. Its labels are
+# read with `panel` and its two buttons are pressed with `press`, so a click is the real onClick.
 #
 # Debug builds only, because `hausi` is.
 #
@@ -44,33 +48,120 @@ place piece_ezomic_infusion 4.2 -0.6 -174 0.10
 wait 2
 goto piece_ezomic_infusion
 give TrophyBoar:1
-give DeerHide:1
-give Resin:1
+give DeerHide:3
+give Resin:3
 wait 1
 use piece_ezomic_infusion
 wait 1
 
-# Everything in hand, nothing in the basin.
+# The table's own window is up, and the vanilla recipe list is not. Nothing is placed and nothing is in the
+# basin.
+panel Base yes
+panel Infusing yes
+panel Result yes
+panel Basin: empty yes
+mod hausi window
+printed window=open yes
+printed base=none yes
+printed infusing=none yes
+printed craft=no yes
 hover piece_ezomic_infusion Empty_basin
 craftable HausiRelic_Meadows no
-close
-wait 1
+
+# A right click in the inventory places an ingredient, and Resin is not one, so it places nothing.
+mod hausi place Resin
+mod hausi window
+printed base=none yes
+printed infusing=none yes
+mod hausi place TrophyBoar
+mod hausi window
+printed base=TrophyBoar yes
+printed result=none yes
+panel Boar Trophy yes
+mod hausi place DeerHide
+mod hausi window
+printed infusing=DeerHide yes
+printed result=HausiRelic_Meadows yes
+panel Meadows Relic yes
+
+# Both slots filled and the basin dry: the preview shows, the button does not work.
+printed craft=no yes
+panel Basin: empty yes
 
 mod hausi fill Resin
 printed took=yes yes
 wait 1
-carrying Resin 0
+carrying Resin 2
 hover piece_ezomic_infusion The_basin_holds_Resin
-use piece_ezomic_infusion
+panel Basin: Resin yes
+mod hausi window
+printed liquid=Resin yes
+printed craft=yes yes
+
+# A full basin takes no second fill, and the Resin stays in the bag.
+mod hausi fill Resin
+printed took=yes yes
+carrying Resin 2
+
+# Emptying the basin from the window, so a wrong fill does not block recipes.
+press Empty basin
 wait 1
-craftable HausiRelic_Meadows yes
-craft HausiRelic_Meadows
+hover piece_ezomic_infusion Empty_basin
+panel Basin: empty yes
+mod hausi window
+printed liquid=none yes
+printed craft=no yes
+mod hausi fill Resin
+wait 1
+carrying Resin 1
+mod hausi window
+printed craft=yes yes
+
+# A slot clears when it is clicked, and the preview goes with it.
+press Deer Hide
+wait 1
+mod hausi window
+printed infusing=none yes
+printed result=none yes
+printed craft=no yes
+mod hausi place DeerHide
+mod hausi window
+printed craft=yes yes
+
+# The craft goes through the window. One Deer Hide of the three is used, the Boar trophy is gone and the
+# slot that held it is empty again, and the craft empties the basin.
+press Infuse
 wait 5
 carrying HausiRelic_Meadows 1
 carrying TrophyBoar 0
-carrying DeerHide 0
-
-# The craft empties the basin.
+carrying DeerHide 2
+mod hausi window
+printed base=none yes
+printed infusing=DeerHide yes
+printed liquid=none yes
 hover piece_ezomic_infusion Empty_basin
+panel Basin: empty yes
+
+# Walking away shuts the window, and its slots are forgotten.
+mod hausi window
+printed window=open yes
+move 12 0
+wait 3
+mod hausi window
+printed window=closed yes
+printed infusing=none yes
+goto piece_ezomic_infusion
+wait 1
+use piece_ezomic_infusion
+wait 1
+mod hausi window
+printed window=open yes
+printed infusing=none yes
+
+# A table taken down under an open window takes the window with it.
+break piece_ezomic_infusion
+wait 2
+mod hausi window
+printed window=closed yes
 close
 clear

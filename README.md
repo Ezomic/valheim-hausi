@@ -66,6 +66,11 @@ beside a workbench. It has one recipe, there only so the table can be tested: a 
 with the basin filled, make the Meadows relic. This is a proof and not a feature. The relic normally comes
 from the harder boss fight, so the recipe lets a player skip it, and it is expected to change before release.
 
+The table opens its own window rather than the workbench's recipe list (Core's `InfusionWindow.cs`, LHM-95).
+Right-click the Boar trophy and the Deer Hide in your inventory to put them in the Base and Infusing slots,
+fill the basin by using Resin, a Greydwarf Eye or Guck on the table, and press Infuse. Empty basin tips out
+a wrong fill, and a click on a slot takes its item back out.
+
 The table is a prefab, so a client without the mod cannot join a server that has it.
 
 ## Installing

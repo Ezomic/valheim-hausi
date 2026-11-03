@@ -68,6 +68,10 @@ namespace Hausi
             Biomes.Wire();
             Sashes.Keep();
 
+            // A proof of the shared table, not a feature: the relic is registered by Sashes a few
+            // frames in, and InfusionTable retries a name that does not resolve yet.
+            InfusionTable.AddRecipe("TrophyBoar", "DeerHide", "HausiRelic_Meadows", InfusionLiquid.Any);
+
             // PatchAll over named types, never the whole assembly. A bare PatchAll() walks
             // every type in the DLL, so a half-written patch class in another file goes live
             // the moment it compiles.
@@ -88,6 +92,7 @@ namespace Hausi
         private void Update()
         {
             Prefabs.Tick();
+            InfusionTable.Tick();
             Biomes.Tick();
             Sashes.Tick();
             Slot.Tick();

@@ -59,6 +59,15 @@ trophies at the altar there.
 altar needs a Vandi that has `AskHarder` and `IsHarderSummon` (LHM-87, not published yet). Without one, the slot still boosts drops,
 offerings summon the plain boss, and no relic drops.
 
+### The Infusion Table (proof recipe)
+
+Hausi carries the suite's shared Infusion Table, built from the Hammer for 10 Wood, 8 Stone and 4 Flint
+beside a workbench. It has one recipe, there only so the table can be tested: a Boar trophy and a Deer Hide,
+with the basin filled, make the Meadows relic. This is a proof and not a feature. The relic normally comes
+from the harder boss fight, so the recipe lets a player skip it, and it is expected to change before release.
+
+The table is a prefab, so a client without the mod cannot join a server that has it.
+
 ## Installing
 
 Needs BepInEx. Nothing else. Through a mod manager it is one install. By hand, put `Hausi.dll` and every

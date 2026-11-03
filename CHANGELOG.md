@@ -2,6 +2,9 @@
 
 ## 0.1.0 - unreleased
 
+Links the shared Infusion Table with one proof recipe: a Boar trophy and a Deer Hide make the Meadows relic.
+A proof for testing the table, not a release feature, since it lets a player skip the harder boss fight.
+
 First version. Trophies finally do something: right click one and it is worn in a slot of its own, hanging
 at your hip where other players can see it, and the creatures of its biome give more while it is. One trophy
 is 1.25x, that biome's sash is 1.5x and an upgraded sash is a true double, rolled per dropped unit. While a

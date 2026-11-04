@@ -305,9 +305,54 @@ def mountain():
                 "Z", "Y").to_matrix(), "meal", sides=4, tilt=0.0)
 
 
+def facing(direction):
+    return Vector(direction).normalized().to_track_quat("Z", "Y").to_matrix()
+
+
+def plains():
+    strap = Strap(band(TOP, BOTTOM, 0.06, 0.016, "cloth", stations=36))
+
+    for k, angle in enumerate(strap.spaced(0.038)):
+        point, basis = strap.frame(angle, 0.016)
+        mat = "cloth" if k % 2 == 0 else "rope"
+        for side in (-1, 1):
+            block((0.04, 0.012, 0.062), point, basis, mat, shift=(side * 0.014, 0.008, 0.0),
+                  turn=(0.0, side * -34.0, 0.0), tilt=1.0)
+
+    point, basis = strap.frame(0.02 * math.pi, 0.016)
+    base = point + basis @ Vector((0.0, 0.03, 0.0))
+    heading = Vector((-0.75, 0.3, 0.4)).normalized()
+    sweep = Vector((0.0, 0.0, 1.0))
+    cursor = base
+    steps = 6
+    for step in range(steps):
+        bottom = 0.036 - 0.032 * (step / steps) ** 1.2
+        top = 0.036 - 0.032 * ((step + 1) / steps) ** 1.2
+        length = 0.06
+        spike(bottom, max(top, 0.004), length * 1.1, cursor, facing(heading), "bone", sides=7, tilt=0.0)
+        cursor = cursor + heading * length
+        heading = (heading + sweep * 0.2).normalized()
+
+    wrap = base + Vector((-0.75, 0.3, 0.4)).normalized() * 0.04
+    loop(0.036, 0.012, wrap, facing((-0.75, 0.3, 0.4)), "cloth", major=9)
+    clasp, clasp_basis = strap.frame(0.02 * math.pi, 0.016)
+    spike(0.05, 0.05, 0.016, clasp, clasp_basis, "iron", sides=6, shift=(0.0, 0.0, 0.0), turn=(-90.0, 0.0, 0.0))
+    blob(0.022, clasp, clasp_basis, "iron", scale=(1.0, 0.6, 1.0), shift=(0.0, 0.02, 0.0), detail=1)
+
+    hip = strap.frame(math.pi, 0.0)[0]
+    blob(0.032, (hip.x + 0.01, hip.y + 0.01, hip.z - 0.03), WORLD, "cloth", scale=(1.0, 0.8, 1.0), detail=1)
+    for k, dx in enumerate((-0.04, -0.025, -0.01, 0.005, 0.02, 0.035, 0.05)):
+        length = 0.24 + 0.03 * ((k * 3) % 4)
+        spike(0.011, 0.005, length, (hip.x + dx, hip.y + 0.01 + 0.004 * (k % 2), hip.z - 0.05 - length), WORLD,
+              "cloth" if k % 2 == 0 else "rope", sides=4, tilt=2.0)
+    for dx in (-0.04, 0.02):
+        blob(0.012, (hip.x + dx, hip.y + 0.014, hip.z - 0.3), WORLD, "bone", detail=1, tilt=0.0)
+
+
 SASHES = {
     "meadows": meadows,
     "blackforest": blackforest,
     "swamp": swamp,
     "mountain": mountain,
+    "plains": plains,
 }

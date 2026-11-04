@@ -349,10 +349,73 @@ def plains():
         blob(0.012, (hip.x + dx, hip.y + 0.014, hip.z - 0.3), WORLD, "bone", detail=1, tilt=0.0)
 
 
+def mistlands():
+    strap = Strap(band(TOP, BOTTOM, 0.075, 0.012, "stone", stations=36))
+
+    for k, angle in enumerate(strap.spaced(0.052)):
+        point, basis = strap.frame(angle, 0.012)
+        block((0.096, 0.012, 0.086), point, basis, "cloth", shift=(0.0, 0.008, 0.0),
+              turn=(-10.0, 5.0 if k % 2 else -5.0, 0.0), tilt=1.0)
+        blob(0.012, point, basis, "bone", shift=(0.0, 0.022, 0.006), detail=1, tilt=0.0)
+
+    point, basis = strap.frame(0.0, 0.012)
+    for lift, size, shift in ((0.03, (0.15, 0.016, 0.12), 0.0), (0.05, (0.12, 0.016, 0.095), 0.0),
+                              (0.07, (0.09, 0.016, 0.07), 0.0)):
+        block(size, point, basis, "stone", shift=(0.0, lift, shift), turn=(-8.0, 0.0, 0.0), tilt=1.0)
+    blob(0.022, point, basis, "bone", shift=(0.0, 0.1, 0.0), detail=1, tilt=0.0)
+
+    hip = strap.frame(math.pi, 0.0)[0]
+    loop(0.04, 0.009, (hip.x + 0.01, hip.y + 0.012, hip.z - 0.01), WORLD, "bone", turn=(90.0, 0.0, 0.0))
+    for j in range(4):
+        width = 0.088 - 0.012 * j
+        centre = (hip.x + 0.01, hip.y + 0.012 + 0.003 * j, hip.z - 0.05 - j * 0.052)
+        block((width, 0.012, 0.07), centre, WORLD, "cloth" if j % 2 == 0 else "stone", turn=(-8.0, 0.0, 0.0), tilt=1.0)
+        blob(0.011, (centre[0], centre[1] + 0.012, centre[2]), WORLD, "bone", detail=1, tilt=0.0)
+    last = hip.z - 0.05 - 3 * 0.052 - 0.045
+    block((0.052, 0.012, 0.052), (hip.x + 0.01, hip.y + 0.021, last), WORLD, "cloth", turn=(0.0, 45.0, 0.0), tilt=0.5)
+
+
+def link(at, basis, flat, shift=(0.0, 0.0, 0.0)):
+    loop(0.025, 0.011, at, basis, "iron", scale=(0.75, 1.6, 1.0), shift=shift,
+         turn=(90.0, 0.0, 0.0) if flat else (90.0, 0.0, 90.0))
+
+
+def ashlands():
+    strap = Strap(band(TOP, BOTTOM, 0.022, 0.01, "iron", stations=36))
+
+    for k, angle in enumerate(strap.spaced(0.056)):
+        flat = k % 2 == 0
+        point, basis = strap.frame(angle, 0.014 if flat else 0.032)
+        link(point, basis, flat)
+        if flat:
+            blob(0.014, point, basis, "bone", shift=(0.0, 0.016, 0.0), detail=1, tilt=0.0)
+
+    point, basis = strap.frame(0.34 * math.pi, 0.02)
+    spike(0.05, 0.05, 0.018, point, basis, "iron", sides=6, turn=(-90.0, 0.0, 0.0), shift=(0.0, 0.02, 0.0))
+    for pitch, roll, length in ((0.0, 0.0, 0.24), (-32.0, 0.0, 0.17), (32.0, 0.0, 0.17), (0.0, -32.0, 0.14),
+                                (0.0, 32.0, 0.14)):
+        spike(0.04, 0.005, length, point, basis, "stone", sides=5, shift=(0.0, 0.034, 0.0),
+              turn=(-90.0 + pitch, 0.0, roll), tilt=3.0)
+    blob(0.02, point, basis, "bone", shift=(0.0, 0.05, 0.0), detail=1, tilt=0.0)
+
+    point, basis = strap.frame(0.01 * math.pi, 0.03)
+    for direction, length in (((-0.8, 0.0, 0.6), 0.13), ((-0.4, 0.3, 0.9), 0.1), ((-0.9, 0.3, 0.2), 0.09)):
+        spike(0.026, 0.004, length, point, facing(direction), "stone", sides=5, tilt=0.0)
+
+    hip = strap.frame(math.pi, 0.0)[0]
+    for j in range(6):
+        link((hip.x + 0.01, hip.y + 0.012, hip.z - 0.03 - j * 0.045), WORLD, j % 2 == 0)
+    spike(0.036, 0.004, 0.16, (hip.x + 0.01, hip.y + 0.012, hip.z - 0.3 - 0.16), WORLD, "stone", sides=5,
+          tilt=1.0)
+    blob(0.016, (hip.x + 0.01, hip.y + 0.03, hip.z - 0.32), WORLD, "bone", detail=1, tilt=0.0)
+
+
 SASHES = {
     "meadows": meadows,
     "blackforest": blackforest,
     "swamp": swamp,
     "mountain": mountain,
     "plains": plains,
+    "mistlands": mistlands,
+    "ashlands": ashlands,
 }

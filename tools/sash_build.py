@@ -186,7 +186,7 @@ def icon(obj, name, view=(0.35, 3.0, 0.25)):
 
 
 def dropped(obj, name):
-    """The sash as it lies on the ground: the same mesh face down, so its back is what shows, at 0.45."""
+    """Dropped, the mesh lies face down at 0.45, so it is the back that shows."""
     lo = [min(v.co[i] for v in obj.data.vertices) for i in range(3)]
     hi = [max(v.co[i] for v in obj.data.vertices) for i in range(3)]
     span = max(hi[0] - lo[0], hi[2] - lo[2])

@@ -18,7 +18,7 @@ runs all the way round the loop and only the signature piece sits on the front.
 import math
 import random
 
-from sash_designs import GAP, band, tail
+from sash_designs import GAP, band
 from vhbuild import material
 
 import bpy  # noqa: E402
@@ -170,9 +170,8 @@ def meadows():
         block((0.112, 0.026, 0.016), point, basis, "bone", shift=(0.0, 0.02, end * 0.044), tilt=1.5)
     block((0.012, 0.03, 0.09), point, basis, "bone", shift=(0.0, 0.022, 0.0), tilt=1.0)
 
-    for angle in (0.52 * math.pi,):
-        point, basis = strap.frame(angle, 0.016)
-        block((0.07, 0.01, 0.05), point, basis, "cloth", shift=(0.0, 0.006, 0.0))
+    point, basis = strap.frame(0.52 * math.pi, 0.016)
+    block((0.07, 0.01, 0.05), point, basis, "cloth", shift=(0.0, 0.006, 0.0))
 
     hip = strap.frame(math.pi, 0.0)[0]
     hang((hip.x + 0.02, hip.y, hip.z), 0.22, 0.075, "cloth", lean=4.0)
@@ -336,7 +335,7 @@ def plains():
     wrap = base + Vector((-0.75, 0.3, 0.4)).normalized() * 0.04
     loop(0.036, 0.012, wrap, facing((-0.75, 0.3, 0.4)), "cloth", major=9)
     clasp, clasp_basis = strap.frame(0.02 * math.pi, 0.016)
-    spike(0.05, 0.05, 0.016, clasp, clasp_basis, "iron", sides=6, shift=(0.0, 0.0, 0.0), turn=(-90.0, 0.0, 0.0))
+    spike(0.05, 0.05, 0.016, clasp, clasp_basis, "iron", sides=6, turn=(-90.0, 0.0, 0.0))
     blob(0.022, clasp, clasp_basis, "iron", scale=(1.0, 0.6, 1.0), shift=(0.0, 0.02, 0.0), detail=1)
 
     hip = strap.frame(math.pi, 0.0)[0]

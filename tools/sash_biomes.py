@@ -221,7 +221,93 @@ def blackforest():
         loop(0.056, 0.011, (hip.x + 0.002, hip.y + 0.01, hip.z - drop), WORLD, "wood", scale=(1.0, 0.75, 1.0))
 
 
+def bone_charm(at, length, mat="bone", turn=0.0):
+    """A long bone with a knob at each end, hanging from a cord."""
+    x, y, z = at
+    spike(0.012, 0.012, 0.045, (x, y, z - 0.045), WORLD, "rope", sides=4, tilt=1.0)
+    spike(0.011, 0.011, length, (x, y, z - 0.045 - length), WORLD, mat, sides=5, turn=(0.0, turn, 0.0), tilt=2.0)
+    for end in (0.0, length):
+        for side in (-0.011, 0.011):
+            blob(0.014, (x + side, y, z - 0.045 - end), WORLD, mat, detail=1, tilt=1.0)
+
+
+def skull(at, size, mat="bone"):
+    """A cranium over a jaw, with dark sockets and a nose, facing the front."""
+    x, y, z = at
+    blob(size, (x, y, z), WORLD, mat, scale=(1.0, 0.95, 0.95), detail=2, tilt=2.0)
+    block((size * 0.95, size * 0.8, size * 0.5), (x, y + size * 0.15, z - size * 0.75), WORLD, mat, tilt=2.0)
+    for side in (-1, 1):
+        blob(size * 0.26, (x + side * size * 0.38, y + size * 0.8, z - size * 0.05), WORLD, "wood", detail=1, tilt=1.0)
+    block((size * 0.16, size * 0.18, size * 0.28), (x, y + size * 0.9, z - size * 0.4), WORLD, "wood", tilt=1.0)
+
+
+def swamp():
+    strap = Strap(band(TOP, BOTTOM, 0.07, 0.02, "rope", stations=36))
+
+    for k, angle in enumerate(strap.spaced(0.036)):
+        point, basis = strap.frame(angle, 0.02)
+        lane = k % 3
+        blob(0.032, point, basis, "moss" if k % 2 else "rope", scale=(0.8, 0.7, 1.45),
+             shift=((lane - 1) * 0.017, 0.01, 0.0), turn=(0.0, (1, -1, 1)[lane] * 20.0, 0.0), detail=1, tilt=1.5)
+
+    for angle, length in ((0.12 * math.pi, 0.1), (0.62 * math.pi, 0.12)):
+        point, _ = strap.frame(angle, 0.03)
+        bone_charm((point.x, point.y + 0.012, point.z), length, turn=12.0)
+
+    point, _ = strap.frame(0.36 * math.pi, 0.03)
+    spike(0.008, 0.008, 0.07, (point.x, point.y + 0.01, point.z - 0.07), WORLD, "rope", sides=4, tilt=1.0)
+    skull((point.x, point.y + 0.06, point.z - 0.12), 0.06)
+
+    back, _ = strap.frame(1.5 * math.pi, 0.03)
+    bone_charm((back.x, back.y - 0.012, back.z), 0.1, turn=-10.0)
+
+    hip = strap.frame(math.pi, 0.0)[0]
+    for k in range(4):
+        blob(0.03, (hip.x + 0.01 * (k % 2), hip.y + 0.01, hip.z - 0.03 - k * 0.05), WORLD,
+             "moss" if k % 2 else "rope", scale=(0.9, 0.7, 1.5), turn=(0.0, 25.0 * (1 if k % 2 else -1), 0.0),
+             detail=1, tilt=3.0)
+    for dx, length in ((-0.05, 0.3), (-0.02, 0.38), (0.015, 0.33), (0.05, 0.27)):
+        spike(0.014, 0.008, length, (hip.x + dx, hip.y + 0.015, hip.z - 0.02 - length), WORLD, "moss", sides=5,
+              tilt=2.5)
+    loop(0.05, 0.011, (hip.x, hip.y + 0.014, hip.z - 0.1), WORLD, "rope", scale=(1.0, 0.7, 1.0))
+
+
+def mountain():
+    strap = Strap(band(TOP, BOTTOM, 0.1, 0.02, "cloth", stations=36))
+    stitches(strap, 0.07, 0.043, "meal", lift=0.02, size=(0.008, 0.005, 0.03))
+
+    point, basis = strap.frame(0.01 * math.pi, 0.02)
+    centre = point + basis @ Vector((0.0, 0.012, 0.0))
+    blob(0.075, centre, basis, "meal", scale=(1.3, 0.9, 1.1), detail=2)
+    for _ in range(130):
+        direction = Vector((random.uniform(-1.2, 1.2), random.uniform(0.05, 1.0), random.uniform(-1.0, 1.0)))
+        direction.normalize()
+        world = basis @ direction
+        base = centre + basis @ Vector((direction.x * 0.095, direction.y * 0.06, direction.z * 0.08))
+        spike(0.02, 0.002, random.uniform(0.06, 0.11), base, world.to_track_quat("Z", "Y").to_matrix(), "meal",
+              sides=4, tilt=0.0)
+
+    for angle, length in ((0.3 * math.pi, 0.13), (0.43 * math.pi, 0.18), (0.57 * math.pi, 0.14)):
+        point, basis = strap.frame(angle, 0.02)
+        blob(0.016, point, basis, "iron", shift=(0.0, 0.02, 0.0), detail=1)
+        top = (point.x, point.y + 0.025, point.z - 0.03)
+        block((0.04, 0.024, 0.036), top, WORLD, "iron", tilt=2.0)
+        spike(0.025, 0.004, length, (top[0], top[1] + 0.004, top[2] - 0.018), WORLD, "bone", sides=5,
+              turn=(180.0, 0.0, 0.0), tilt=2.0)
+
+    hip = strap.frame(math.pi, 0.0)[0]
+    hang((hip.x + 0.015, hip.y, hip.z), 0.22, 0.09, "cloth", lean=3.0)
+    hang((hip.x - 0.05, hip.y + 0.02, hip.z), 0.15, 0.075, "cloth", lean=-3.0)
+    for dx in (-0.04, 0.0, 0.04):
+        for dz in (0.0, -0.03):
+            direction = Vector((dx * 3.0, 0.2, -1.0)).normalized()
+            spike(0.016, 0.002, 0.08, (hip.x + 0.015 + dx, hip.y + 0.012, hip.z - 0.22 + dz), direction.to_track_quat(
+                "Z", "Y").to_matrix(), "meal", sides=4, tilt=0.0)
+
+
 SASHES = {
     "meadows": meadows,
     "blackforest": blackforest,
+    "swamp": swamp,
+    "mountain": mountain,
 }

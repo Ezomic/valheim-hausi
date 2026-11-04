@@ -435,7 +435,10 @@ def bloom_setup(size=8, threshold=0.75):
 
 def render(out_png, width=620, height=580, bloom=True):
     scene = bpy.context.scene
-    scene.render.engine = "BLENDER_EEVEE_NEXT"
+    try:
+        scene.render.engine = "BLENDER_EEVEE_NEXT"
+    except TypeError:
+        scene.render.engine = "BLENDER_EEVEE"
 
     if bloom:
         bloom_setup()

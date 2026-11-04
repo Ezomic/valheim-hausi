@@ -1,0 +1,179 @@
+"""
+Hausi: one sash per biome, each its own object and not a clasp on a shared strap.
+
+Imported by sash_build.py. Every design is a diagonal chest strap on the same loop the baldric
+used, so it sits where the body was measured and the worn offset holds, and differs in width,
+material, drape, ends and a larger signature piece.
+
+The game skins each material group with a vanilla donor and the token group, "bone", is what glows
+on an upgraded sash, so every design keeps one signature piece in "bone". The groups used are the
+ones Skins.cs already knows: cloth, bone, bark, wood, moss, iron, stone, rope and meal. Tints below
+are for the previews and icons only. In game the donors decide the colour, so the silhouette has to
+carry the material.
+
+A dropped sash is the same mesh laid face down at 0.45, which shows its back. The pattern therefore
+runs all the way round the loop and only the signature piece sits on the front.
+"""
+
+import math
+import random
+
+from sash_designs import GAP, band, tail
+from vhbuild import material
+
+import bpy  # noqa: E402
+from mathutils import Euler, Matrix, Vector  # noqa: E402
+
+TOP = (-0.19, 0.0, 1.56)
+BOTTOM = (0.17, 0.0, 1.0)
+WORLD = Matrix.Identity(3)
+
+TINT_SETS = {
+    "meadows": {"cloth": (0.34, 0.17, 0.08, 1.0), "bone": (0.84, 0.78, 0.60, 1.0), "wood": (0.16, 0.08, 0.04, 1.0)},
+}
+
+
+def radius_at(radii, angle):
+    count = len(radii)
+    slot = (angle / (2 * math.pi)) % 1.0 * count
+    index = int(slot)
+    frac = slot - index
+    return radii[index % count] * (1.0 - frac) + radii[(index + 1) % count] * frac
+
+
+class Strap:
+    """A fitted loop, with a way to stand things on it: angle round it and a lift off the skin."""
+
+    def __init__(self, made):
+        self.obj, self.centre, self.u, self.v, self.normal, self.radii = made
+
+    def frame(self, angle, lift=0.0):
+        """The point and a basis whose columns are across the strap, out of the body, along the strap."""
+        out = self.u * math.cos(angle) + self.v * math.sin(angle)
+        along = self.u * -math.sin(angle) + self.v * math.cos(angle)
+        point = self.centre + out * (radius_at(self.radii, angle) + GAP + lift)
+        across = out.cross(along)
+        basis = Matrix(((across.x, out.x, along.x), (across.y, out.y, along.y), (across.z, out.z, along.z)))
+        return point, basis
+
+    def spaced(self, spacing, start=0.0, end=2 * math.pi):
+        """Angles at an even distance apart along the strap, which a fixed angle step is not."""
+        angles = []
+        last = None
+        travelled = spacing
+        samples = 720
+        for k in range(samples + 1):
+            angle = start + (end - start) * k / samples
+            point, _ = self.frame(angle)
+            if last is not None:
+                travelled += (point - last).length
+            last = point
+            if travelled >= spacing:
+                angles.append(angle)
+                travelled = 0.0
+        return angles
+
+
+def jitter(degrees=3.0):
+    return tuple(random.uniform(-degrees, degrees) for _ in range(3))
+
+
+def _seat(obj, at, basis, shift, turn, scale):
+    local = Matrix.Translation(Vector(shift)) @ Euler([math.radians(a) for a in turn]).to_matrix().to_4x4()
+    obj.matrix_world = Matrix.Translation(Vector(at)) @ basis.to_4x4() @ local @ Matrix.Diagonal(Vector((*scale, 1.0)))
+
+
+def block(size, at, basis, mat, shift=(0.0, 0.0, 0.0), turn=(0.0, 0.0, 0.0), tilt=2.0):
+    bpy.ops.mesh.primitive_cube_add(size=1.0)
+    obj = bpy.context.active_object
+    obj.data.materials.append(material(mat))
+    spin = jitter(tilt)
+    _seat(obj, at, basis, shift, tuple(t + s for t, s in zip(turn, spin)), size)
+    return obj
+
+
+def spike(bottom, top, height, at, basis, mat, sides=5, shift=(0.0, 0.0, 0.0), turn=(0.0, 0.0, 0.0), tilt=2.0):
+    """A cone standing on its base at `at` and pointing along the frame's z, turned from there."""
+    bpy.ops.mesh.primitive_cone_add(vertices=sides, radius1=bottom, radius2=top, depth=height)
+    obj = bpy.context.active_object
+    obj.data.materials.append(material(mat))
+    for vert in obj.data.vertices:
+        vert.co.z += height * 0.5
+    spin = jitter(tilt)
+    _seat(obj, at, basis, shift, tuple(t + s for t, s in zip(turn, spin)), (1.0, 1.0, 1.0))
+    return obj
+
+
+def blob(radius, at, basis, mat, scale=(1.0, 1.0, 1.0), shift=(0.0, 0.0, 0.0), turn=(0.0, 0.0, 0.0), detail=2, tilt=3.0):
+    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=detail, radius=radius)
+    obj = bpy.context.active_object
+    obj.data.materials.append(material(mat))
+    spin = jitter(tilt)
+    _seat(obj, at, basis, shift, tuple(t + s for t, s in zip(turn, spin)), scale)
+    return obj
+
+
+def loop(radius, tube, at, basis, mat, scale=(1.0, 1.0, 1.0), shift=(0.0, 0.0, 0.0), turn=(0.0, 0.0, 0.0),
+         major=10, minor=5):
+    """A torus whose hole runs along the frame's z."""
+    bpy.ops.mesh.primitive_torus_add(major_radius=radius, minor_radius=tube, major_segments=major, minor_segments=minor)
+    obj = bpy.context.active_object
+    obj.data.materials.append(material(mat))
+    _seat(obj, at, basis, shift, turn, scale)
+    return obj
+
+
+def hang(at, length, width, mat, lean=0.0, thick=0.014, point=True):
+    """A strip hanging from `at`, one clean piece with a pointed end rather than a stack of planks."""
+    x, y, z = at
+    block((width, thick, length), (x, y, z - length * 0.5), WORLD, mat, turn=(0.0, lean, 0.0), tilt=0.5)
+    if point:
+        edge = width * 0.7071
+        block((edge, thick, edge), (x, y, z - length), WORLD, mat, turn=(0.0, lean + 45.0, 0.0), tilt=0.5)
+
+
+def stitches(strap, spacing, offset, mat, skip=(), lift=0.0, size=(0.006, 0.004, 0.014)):
+    for angle in strap.spaced(spacing):
+        if any(lo <= angle <= hi for lo, hi in skip):
+            continue
+        point, basis = strap.frame(angle, lift)
+        for side in (-1, 1):
+            block(size, point, basis, mat, shift=(side * offset, size[1] * 0.5, 0.0), tilt=3.0)
+
+
+def meadows():
+    strap = Strap(band(TOP, BOTTOM, 0.09, 0.016, "cloth", stations=36))
+    stitches(strap, 0.05, 0.034, "wood", skip=((0.2 * math.pi, 0.4 * math.pi), (0.93 * math.pi, 1.1 * math.pi)),
+             lift=0.016)
+
+    for angle in (0.06 * math.pi, 1.58 * math.pi):
+        point, basis = strap.frame(angle, 0.016)
+        spike(0.011, 0.011, 0.012, point, basis, "bone", sides=7, turn=(-90.0, 0.0, 0.0))
+
+    point, basis = strap.frame(0.3 * math.pi, 0.016)
+    block((0.08, 0.012, 0.11), point, basis, "cloth", shift=(0.0, 0.006, 0.0))
+    for side in (-1, 1):
+        block((0.016, 0.026, 0.092), point, basis, "bone", shift=(side * 0.048, 0.02, 0.0), tilt=1.5)
+    for end in (-1, 1):
+        block((0.112, 0.026, 0.016), point, basis, "bone", shift=(0.0, 0.02, end * 0.044), tilt=1.5)
+    block((0.012, 0.03, 0.09), point, basis, "bone", shift=(0.0, 0.022, 0.0), tilt=1.0)
+
+    for angle in (0.52 * math.pi,):
+        point, basis = strap.frame(angle, 0.016)
+        block((0.07, 0.01, 0.05), point, basis, "cloth", shift=(0.0, 0.006, 0.0))
+
+    hip = strap.frame(math.pi, 0.0)[0]
+    hang((hip.x + 0.02, hip.y, hip.z), 0.22, 0.075, "cloth", lean=4.0)
+    hang((hip.x - 0.045, hip.y + 0.018, hip.z), 0.15, 0.07, "cloth", lean=-4.0)
+    knot = (hip.x + 0.02, hip.y + 0.01, hip.z - 0.25)
+    blob(0.03, knot, WORLD, "cloth", scale=(1.0, 0.8, 0.9), detail=1)
+    tip = (knot[0], knot[1] + 0.012, knot[2] - 0.015)
+    spike(0.03, 0.005, 0.24, tip, WORLD, "bone", sides=7, turn=(180.0, 0.0, 0.0))
+    for turn, length, drop in ((40.0, 0.1, 0.05), (-40.0, 0.1, 0.11)):
+        spike(0.016, 0.003, length, (tip[0], tip[1], tip[2] - drop), WORLD, "bone", sides=5,
+              turn=(180.0, turn, 0.0))
+
+
+SASHES = {
+    "meadows": meadows,
+}

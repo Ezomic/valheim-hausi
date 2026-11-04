@@ -1,12 +1,12 @@
 """
-Hausi: the shipped models. The baldric Robbin picked out of sash_designs.py, one per biome, and a
-relic for each.
+Hausi: the shipped models. A sash for each biome and a relic for each.
 
     blender --background --python tools/sash_build.py
 
-One silhouette, because the pick was of one, with each biome's own hand-built token on the clasp so
-that a Mountain sash and a Swamp sash are different objects at a glance. The token is the same on
-the sash and on its relic, which is how a player sees that the two belong together.
+The seven biome sashes are built in sash_biomes.py, each its own design. The Deep North sash is still
+the baldric of sash_designs.py with a placeholder ice token. Relics are a slab with the biome's token,
+and the tokens below are the ones the relics wear, which is how a player sees that a relic and a sash
+belong together.
 
 Prints triangles, colliders and open edges for each, and fails over 10,000 triangles or on any open
 edge, because a surface with no thickness is a hole in the game that no render shows.
@@ -20,6 +20,8 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from sash_designs import *  # noqa: E402,F403
 from sash_designs import antler, baldric, body, ground, lights, open_edges, reference_cube, torso_points  # noqa: E402
+
+from sash_biomes import SASHES, TINT_SETS  # noqa: E402
 
 import bmesh  # noqa: E402
 import bpy  # noqa: E402
@@ -183,29 +185,57 @@ def icon(obj, name, view=(0.35, 3.0, 0.25)):
     bpy.context.scene.render.film_transparent = False
 
 
-def preview(name):
+def dropped(obj, name):
+    """The sash as it lies on the ground: the same mesh face down, so its back is what shows, at 0.45."""
+    lo = [min(v.co[i] for v in obj.data.vertices) for i in range(3)]
+    hi = [max(v.co[i] for v in obj.data.vertices) for i in range(3)]
+    span = max(hi[0] - lo[0], hi[2] - lo[2])
+
+    bpy.ops.object.camera_add(location=((lo[0] + hi[0]) / 2, lo[1] - 3.0, (lo[2] + hi[2]) / 2),
+                              rotation=(math.radians(90.0), 0.0, 0.0))
+    cam = bpy.context.active_object
+    cam.data.type = "ORTHO"
+    cam.data.ortho_scale = span * 1.15 / 0.45
+    bpy.context.scene.camera = cam
+    render(os.path.join(RENDERS, "%s_dropped.png" % name), width=160, height=160, bloom=False)
+    bpy.data.objects.remove(cam)
+
+
+def preview(obj, name):
+    lights()
+    tint()
+    dropped(obj, name)
+
     body()
     ground()
-    lights()
     reference_cube((1.05, 0.0, 0.5))
     tint()
 
-    for side, sign in (("front", 1), ("back", -1)):
+    for side, sign, at, aim, lens in (("front", 1, (0.0, 3.0, 1.7), (0.0, 0.0, 1.1), 42),
+                                       ("back", -1, (0.0, -3.0, 1.7), (0.0, 0.0, 1.1), 42),
+                                       ("detail", 1, (0.35, 1.7, 1.55), (-0.02, 0.0, 1.3), 50),
+                                       ("hip", 1, (0.5, 1.7, 1.0), (0.12, 0.0, 0.92), 50)):
         for cam in [o for o in bpy.data.objects if o.type == "CAMERA" or o.name.startswith("aim")]:
             bpy.data.objects.remove(cam)
-        camera((0.0, sign * 3.0, 1.7), (0.0, 0.0, 1.1), lens=42)
+        camera(at, aim, lens=lens)
         render(os.path.join(RENDERS, "%s_%s.png" % (name, side)), width=620, height=640, bloom=False)
 
 
 def main():
     os.makedirs(RENDERS, exist_ok=True)
     torso_points()
+    base_tints = dict(TINTS)
 
     for biome, token in BIOMES.items():
         name = "sash_" + biome
+        make = SASHES.get(biome, lambda token=token: baldric(token))
+        TINTS.clear()
+        TINTS.update(base_tints)
+        TINTS.update(TINT_SETS.get(biome, {}))
+
         clear_scene()
         random.seed(SEED)
-        baldric(token)
+        make()
         obj = finish_model(name)
         export(obj, name, ASSETS)
 
@@ -215,10 +245,11 @@ def main():
 
         clear_scene()
         random.seed(SEED)
-        baldric(token)
-        finish_model(name)
-        preview(name)
+        make()
+        preview(finish_model(name), name)
 
+        TINTS.clear()
+        TINTS.update(base_tints)
         name = "relic_" + biome
         clear_scene()
         random.seed(SEED)

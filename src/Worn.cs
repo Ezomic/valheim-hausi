@@ -30,9 +30,29 @@ namespace Hausi
         /// <summary>A build that could not resolve is tried again this much later, not every frame.</summary>
         private const int RetryFrames = 60;
 
+        private const string Emission = "_EmissionColor";
+        private const string EmissionKeyword = "_EMISSION";
+
         private int _hash;
         private int _nextTry;
         private GameObject _model;
+        private string _prefabName;
+
+        /// <summary>The quality the glow was last drawn for, -1 when the model has not been glowed yet.</summary>
+        private int _glowQuality = -1;
+        private string _glowSaid = "none";
+
+        private static MaterialPropertyBlock _block;
+
+        /// <summary>
+        /// The token's material with emission switched on, one per borrowed material. The token wears
+        /// BoneFragments' Standard material, and Standard only reads _EmissionColor with its _EMISSION
+        /// keyword on, which no property block can set. So the copy is ours, made once, never written
+        /// after, and every wearer's own colour goes through a property block on their own renderer.
+        /// </summary>
+        private static readonly Dictionary<Material, Material> Emissive = new Dictionary<Material, Material>();
+
+        private static readonly HashSet<Material> Copies = new HashSet<Material>();
 
         internal static string Described(VisEquipment vis)
         {
@@ -47,6 +67,13 @@ namespace Hausi
                    + " longest=" + (Longest(worn._model) * model.lossyScale.y)
                        .ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)
                    + " at=" + onBody.ToString("F2").Replace(" ", "");
+        }
+
+        /// <summary>The colour this machine drew a player's token in, as #RRGGBB, or none.</summary>
+        internal static string Glowing(VisEquipment vis)
+        {
+            Worn worn;
+            return vis != null && vis.TryGetComponent(out worn) && worn._model != null ? worn._glowSaid : "none";
         }
 
         [HarmonyPatch(typeof(VisEquipment), "UpdateVisuals")]
@@ -74,6 +101,11 @@ namespace Hausi
                     worn._nextTry = Time.frameCount + RetryFrames;
                     worn.Change(__instance, hash);
                 }
+
+                // Off this wearer's own ZDO, like the hash: that is what lets every other machine
+                // draw your glow, and why nobody's glow can come from anybody else's sash.
+                int quality = nview.GetZDO().GetInt(Slot.QualityKey);
+                if (worn._model != null && worn._glowQuality != quality) worn.Glow(quality);
             }
             catch (Exception error)
             {
@@ -92,10 +124,18 @@ namespace Hausi
                 _model = null;
             }
 
+            _prefabName = null;
+            _glowQuality = -1;
+            _glowSaid = "none";
+
             if (hash != 0 && ObjectDB.instance != null)
             {
                 GameObject prefab = ObjectDB.instance.GetItemPrefab(hash);
-                if (prefab != null) _model = Build(prefab, vis);
+                if (prefab != null)
+                {
+                    _model = Build(prefab, vis);
+                    _prefabName = prefab.name;
+                }
             }
 
             // Remembered only once it has worked. A wearer can be seen before their item resolves, in
@@ -166,6 +206,80 @@ namespace Hausi
             model.transform.localScale = Vector3.one * (scale / joint.lossyScale.y);
 
             return model;
+        }
+
+        /// <summary>
+        /// An upgraded sash's token glows faintly in its biome's colour, and nothing else does. No
+        /// Light, on purpose: a light per wearer is a cost every machine pays for every player in view.
+        /// </summary>
+        private void Glow(int quality)
+        {
+            _glowQuality = quality;
+            _glowSaid = "none";
+
+            int index = Sashes.TokenSubmeshOf(_prefabName);
+            if (index < 0) return;
+
+            Color colour = Color.black;
+            bool lit = quality >= 2 && GlowColour(Sashes.BiomeOf(_prefabName), out colour);
+
+            if (_block == null) _block = new MaterialPropertyBlock();
+            _block.Clear();
+            _block.SetColor(Emission, lit ? colour : Color.black);
+
+            foreach (MeshRenderer renderer in _model.GetComponentsInChildren<MeshRenderer>(true))
+            {
+                Material[] materials = renderer.sharedMaterials;
+                if (index >= materials.Length || materials[index] == null) continue;
+
+                if (lit)
+                {
+                    materials[index] = EmissiveOf(materials[index]);
+                    renderer.sharedMaterials = materials;
+                }
+
+                renderer.SetPropertyBlock(_block, index);
+            }
+
+            if (lit) _glowSaid = "#" + ColorUtility.ToHtmlStringRGB(colour);
+        }
+
+        private static Material EmissiveOf(Material source)
+        {
+            // A renderer lit once already wears the copy, and a sash taken from quality 2 to 1 and
+            // back keeps it: copying the copy would make one more material per cycle, on every
+            // machine that sees that player.
+            if (Copies.Contains(source)) return source;
+            if (Emissive.TryGetValue(source, out Material copy) && copy != null) return copy;
+
+            copy = new Material(source) { name = source.name + " (hausi glow)" };
+            copy.EnableKeyword(EmissionKeyword);
+            copy.SetColor(Emission, Color.black);
+            Emissive[source] = copy;
+            Copies.Add(copy);
+
+            return copy;
+        }
+
+        /// <summary>A biome's GlowColours entry. False for no entry or one that does not parse.</summary>
+        private static bool GlowColour(string biome, out Color colour)
+        {
+            colour = Color.black;
+            if (biome == null) return false;
+
+            foreach (string entry in (HausiConfig.GlowColours.Value ?? "").Split(','))
+            {
+                string[] pair = entry.Split(':');
+                if (pair.Length != 2 || pair[0].Trim().ToLowerInvariant() != biome) continue;
+
+                if (ColorUtility.TryParseHtmlString(pair[1].Trim(), out colour)) return true;
+
+                HausiPlugin.LogOnce("GlowColours gives " + biome + " '" + pair[1].Trim() + "', which is not a "
+                                    + "colour, so its upgraded sash does not glow. Write it as #RRGGBB.");
+                return false;
+            }
+
+            return false;
         }
 
         /// <summary>

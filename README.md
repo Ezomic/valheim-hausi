@@ -35,22 +35,25 @@ A creature's biome is its own trophy's. A creature with no trophy, like a Greyli
 boost, because the alternatives were worse: the biome it died in would make a stray Greydwarf a Meadows
 creature.
 
-The tables cannot see a creature that only stands in a location or a dungeon. Seven ordinary ones are
-named in `BiomeOverrides` by default (Fuling shaman, Growth, Ulv, Cultist, Rancid Remains, Surtling, Charred
-Warlock). Hildir's quest bosses and the rest are left out: worn, they do nothing.
+The tables cannot see a creature that only stands in a location or a dungeon. Eight ordinary ones are
+named in `BiomeOverrides` by default, each in the biome where a player first meets it: Fuling shaman and
+Growth in the Plains, Ulv and Cultist in the Mountains, Skeleton and Rancid Remains in the Black Forest,
+Surtling in the Swamp, Charred Warlock in the Ashlands. Hildir's quest bosses and the rest are left out:
+worn, they do nothing.
 `hausi sets` in the console lists every set and everything left over.
 
 ### The sash
 
 Every trophy of a biome plus its boss's, at a workbench, makes that biome's sash, worn in the same slot.
-Seven exist: Meadows, Black Forest, Swamp, Mountain, Plains, Mistlands, Ashlands. A sash needs a boss
-trophy, the Ocean has no boss and the Frozen King drops no trophy, so those two biomes have trophies but no
-sash.
+Eight exist: Meadows, Black Forest, Swamp, Mountain, Plains, Mistlands, Ashlands and Deep North. The Frozen
+King drops no trophy, so the Deep North sash takes his Sacrificial Blood in its place (`BossItems`). The
+Ocean has no boss, so its trophies work one at a time and it has no sash.
 
 Offer at a boss's altar wearing that biome's sash and it comes back harder, and the sash is not used up.
 Harder means Vandi's stars and nothing else: this mod asks and Vandi decides, so there is no second
 difficulty system. That fight drops a relic, which with a material from the same biome upgrades the sash
-at a level 2 workbench to the true double, using the item's quality as vanilla does.
+at a level 2 workbench to the true double, using the item's quality as vanilla does. An upgraded sash's
+token glows faintly in its biome's colour, so everyone can see who has done the harder fight.
 
 The Queen counts. She stands in her room the first time, and comes back to an offering of 3 Seeker Soldier
 trophies at the altar there.

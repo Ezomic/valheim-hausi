@@ -200,8 +200,12 @@ namespace Hausi
             foreach (Player player in Player.GetAllPlayers())
             {
                 VisEquipment vis;
-                if (player.TryGetComponent(out vis))
-                    term.AddString("hausi: look." + (player == Player.m_localPlayer ? "self" : "other") + "=" + Worn.Described(vis));
+                if (!player.TryGetComponent(out vis)) continue;
+
+                // Two lines, so a scenario can ask about one player's glow without a regex.
+                string who = player == Player.m_localPlayer ? "self" : "other";
+                term.AddString("hausi: look." + who + "=" + Worn.Described(vis));
+                term.AddString("hausi: glow." + who + "=" + Worn.Glowing(vis));
             }
         }
 

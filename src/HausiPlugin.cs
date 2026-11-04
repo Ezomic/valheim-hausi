@@ -158,9 +158,11 @@ namespace Hausi
             // host decides it.
             Suite.Sync(HausiConfig.Enabled);
 
-            // Where a trophy hangs desyncs nothing and is nobody's rule, and neither is a log.
+            // Where a trophy hangs desyncs nothing and is nobody's rule, and neither is a log or the
+            // colour this machine draws a glow in.
             Suite.Local(HausiConfig.WornJoint, HausiConfig.WornSize, HausiConfig.WornRight,
-                HausiConfig.WornUp, HausiConfig.WornForward, HausiConfig.WornTurn, HausiConfig.Verbose);
+                HausiConfig.WornUp, HausiConfig.WornForward, HausiConfig.WornTurn, HausiConfig.GlowColours,
+                HausiConfig.Verbose);
         }
 
         private void OnDestroy()

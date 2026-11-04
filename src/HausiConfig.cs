@@ -17,9 +17,9 @@ namespace Hausi
     {
         internal static ConfigEntry<bool> Enabled;
         internal static ConfigEntry<float> TrophyChance, SashChance, UpgradedChance;
-        internal static ConfigEntry<string> BossBiomes, BiomeOverrides, UpgradeMaterials;
+        internal static ConfigEntry<string> BossBiomes, BiomeOverrides, UpgradeMaterials, BossItems;
         internal static ConfigEntry<int> HarderStars;
-        internal static ConfigEntry<string> WornJoint;
+        internal static ConfigEntry<string> WornJoint, GlowColours;
         internal static ConfigEntry<float> WornSize, WornRight, WornUp, WornForward, WornTurn;
         internal static ConfigEntry<bool> Verbose;
 
@@ -65,9 +65,14 @@ namespace Hausi
             // full dump of what resolved to no biome on game 1.0.21. Hildir's quest bosses and the
             // rest are left out on purpose: they stay no biome, and that fails by doing less. Each
             // name here is also one more trophy in that biome's sash, for every player on the server.
+            //
+            // Skeletons and Rancid Remains are Black Forest because that is where a player first
+            // fights them, in its crypts, and the Surtling is Swamp for the same reason: it is met at
+            // the swamp's fire geysers long before the Ashlands. Robbin's call on 2026-11-03 (LHM-98).
             BiomeOverrides = cfg.Bind("Biomes", "BiomeOverrides",
                 "TrophyGoblinShaman:plains, TrophyGrowth:plains, TrophyUlv:mountain, TrophyCultist:mountain, "
-                + "TrophySkeletonPoison:swamp, TrophySurtling:ashlands, TrophyCharredMage:ashlands",
+                + "TrophySkeleton:blackforest, TrophySkeletonPoison:blackforest, TrophySurtling:swamp, "
+                + "TrophyCharredMage:ashlands",
                 "prefab:biome, comma separated, for an item the game's tables cannot place: a trophy "
                 + "of a creature that only ever stands in a location or a dungeon. A trophy not placed "
                 + "either way can be worn and does nothing, and naming one adds it to that biome's "
@@ -76,10 +81,19 @@ namespace Hausi
 
             UpgradeMaterials = cfg.Bind("Biomes", "UpgradeMaterials",
                 "meadows:DeerHide:20, blackforest:TrollHide:10, swamp:Ooze:20, mountain:WolfPelt:10, "
-                + "plains:LoxPelt:5, mistlands:Carapace:10, ashlands:AskHide:5",
+                + "plains:LoxPelt:5, mistlands:Carapace:10, ashlands:AskHide:5, deepnorth:MooseHide:10",
                 "biome:prefab:amount, comma separated. What upgrading that biome's sash costs at a "
                 + "level 2 workbench, on top of its relic. A biome with a missing or misspelled entry "
                 + "has no sash recipe at all, and the log says so.");
+
+            // The Frozen King drops no trophy, so the rule "every trophy plus the boss's" gave the
+            // Deep North no sash at all. Named here rather than read off his drop table, because
+            // FrozenKing_p3 drops a crown jewel as well and "his first drop" is a guess about the
+            // order of a list. Only consulted for a biome whose boss drops no trophy.
+            BossItems = cfg.Bind("Biomes", "BossItems", "deepnorth:FrozenKingDrop",
+                "biome:prefab, comma separated. For a biome whose boss drops no trophy, the item that "
+                + "stands in for it as the last ingredient of that biome's sash. A misspelled entry "
+                + "leaves that biome with no sash recipe, and the log says so.");
 
             HarderStars = cfg.Bind("Tiers", "HarderStars", 1,
                 "How many stars above what Vandi would give you a boss comes back with, when you offer "
@@ -114,6 +128,15 @@ namespace Hausi
 
             WornTurn = cfg.Bind("Worn", "WornTurn", -90f,
                 "Degrees the trophy is turned about the vertical. -90 faces the wearer's left.");
+
+            // Dim on purpose: this is the emission added to a lit surface, so a full colour turns
+            // the token into a lamp and the rule was "faintly". Twice these values read as a vivid
+            // cyan badge at night from another player's screen, measured on the Deep North sash.
+            GlowColours = cfg.Bind("Worn", "GlowColours",
+                "meadows:#273D16, blackforest:#17352D, swamp:#3D3D0F, mountain:#3E454C, plains:#46350E, "
+                + "mistlands:#2F1D43, ashlands:#4D1B0D, deepnorth:#1D4353",
+                "biome:#RRGGBB, comma separated. The faint glow on an upgraded sash's token, as every "
+                + "machine draws it. A biome with no entry, or one that does not parse, does not glow.");
 
             // Not synced by intent - see the plugin. A diagnostic flag is personal, and a
             // host turning on someone else's logging is not a thing anybody asked for.

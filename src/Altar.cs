@@ -20,8 +20,10 @@ namespace Hausi
     ///
     /// <b>The Queen's room is an altar like any other.</b> She stands there the first time, behind a sealed
     /// door, and comes back through offeraltar_queen in the room, for 3 Seeker Soldier trophies. The room
-    /// generates at y 5066, which changes nothing here: this reads no position. Frozen King's room has a
-    /// bowl as well, and asks nothing, because he drops no trophy and so has no sash.
+    /// generates at y 5066, which changes nothing here: this reads no position. The Frozen King's bowl is
+    /// the same again: his altar's boss prefab carries defeated_frozenking, which BossBiomes puts in the
+    /// Deep North. He fights in phases, each its own prefab, and which one's death Vandi has stamped as
+    /// harder, and so which drops the relic, is unproven until a real kill.
     /// </summary>
     internal static class Altar
     {

@@ -30,6 +30,18 @@ WORLD = Matrix.Identity(3)
 
 TINT_SETS = {
     "meadows": {"cloth": (0.34, 0.17, 0.08, 1.0), "bone": (0.84, 0.78, 0.60, 1.0), "wood": (0.16, 0.08, 0.04, 1.0)},
+    "blackforest": {"bark": (0.20, 0.14, 0.09, 1.0), "moss": (0.22, 0.38, 0.12, 1.0),
+                    "bone": (0.40, 0.24, 0.15, 1.0), "wood": (0.56, 0.42, 0.24, 1.0)},
+    "swamp": {"rope": (0.30, 0.22, 0.12, 1.0), "moss": (0.20, 0.30, 0.11, 1.0),
+              "bone": (0.84, 0.80, 0.64, 1.0), "wood": (0.04, 0.035, 0.03, 1.0)},
+    "mountain": {"cloth": (0.36, 0.56, 0.82, 1.0), "meal": (0.93, 0.95, 1.0, 1.0),
+                 "iron": (0.32, 0.33, 0.38, 1.0), "bone": (0.88, 0.84, 0.72, 1.0)},
+    "plains": {"cloth": (0.52, 0.09, 0.07, 1.0), "rope": (0.76, 0.58, 0.32, 1.0),
+               "bone": (0.90, 0.86, 0.72, 1.0), "iron": (0.46, 0.47, 0.52, 1.0)},
+    "mistlands": {"cloth": (0.30, 0.14, 0.52, 1.0), "stone": (0.17, 0.08, 0.32, 1.0),
+                  "bone": (0.86, 0.76, 1.0, 1.0)},
+    "ashlands": {"iron": (0.07, 0.07, 0.08, 1.0), "bone": (1.0, 0.42, 0.08, 1.0),
+                 "stone": (0.18, 0.11, 0.10, 1.0)},
 }
 
 
@@ -174,6 +186,42 @@ def meadows():
               turn=(180.0, turn, 0.0))
 
 
+def blackforest():
+    strap = Strap(band(TOP, BOTTOM, 0.105, 0.028, "bark", stations=36))
+
+    for k, angle in enumerate(strap.spaced(0.05)):
+        point, basis = strap.frame(angle, 0.028)
+        block((0.118, 0.007, 0.02), point, basis, "bark", shift=(0.0, 0.003, 0.0),
+              turn=(0.0, 34.0 if k % 2 == 0 else -34.0, 0.0))
+
+    for angle, radius, across in ((0.02 * math.pi, 0.07, 0.0), (0.07 * math.pi, 0.045, 0.03),
+                                  (0.62 * math.pi, 0.036, -0.02), (0.95 * math.pi, 0.03, 0.02),
+                                  (1.45 * math.pi, 0.04, 0.0), (1.8 * math.pi, 0.032, 0.0)):
+        point, basis = strap.frame(angle, 0.028)
+        blob(radius, point, basis, "moss", scale=(1.0, 0.75, 1.0), shift=(across, radius * 0.45, 0.0), detail=2)
+        blob(radius * 0.6, point, basis, "moss", scale=(1.0, 0.8, 1.0),
+             shift=(across + radius * 0.8, radius * 0.3, radius * 0.5), detail=1)
+
+    point, basis = strap.frame(0.24 * math.pi, 0.028)
+    for fan in range(-4, 5):
+        spike(0.008, 0.0015, 0.17 - abs(fan) * 0.01, point, basis, "moss", sides=4,
+              shift=(0.0, 0.01, 0.0), turn=(-48.0, 180.0 + fan * 16.0, 0.0), tilt=3.0)
+    point, basis = strap.frame(0.36 * math.pi, 0.028)
+    blob(0.036, point, basis, "bone", scale=(1.0, 0.8, 1.0), shift=(0.0, 0.03, 0.0), detail=1)
+    for turn in (0.0, 90.0, 180.0, 270.0):
+        spike(0.024, 0.01, 0.1, point, basis, "bone", sides=5, shift=(0.0, 0.03, 0.0),
+              turn=(-14.0, turn + 20.0, 0.0), tilt=6.0)
+
+    hip = strap.frame(math.pi, 0.0)[0]
+    for dx, dy, length in ((-0.045, 0.0, 0.3), (-0.015, 0.02, 0.36), (0.018, 0.0, 0.32), (0.048, 0.018, 0.27)):
+        top = (hip.x + dx, hip.y + dy, hip.z - 0.02)
+        spike(0.024, 0.02, length, (top[0], top[1], top[2] - length), WORLD, "bark", sides=7, tilt=3.0)
+        spike(0.02, 0.019, 0.008, (top[0], top[1], top[2] - length - 0.006), WORLD, "wood", sides=7, tilt=1.0)
+    for drop in (0.06, 0.2):
+        loop(0.056, 0.011, (hip.x + 0.002, hip.y + 0.01, hip.z - drop), WORLD, "wood", scale=(1.0, 0.75, 1.0))
+
+
 SASHES = {
     "meadows": meadows,
+    "blackforest": blackforest,
 }

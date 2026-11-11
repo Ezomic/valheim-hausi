@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+Each biome's sash is its own model now, not one strap with a different clasp: Meadows a stitched leather
+strap with a bone buckle and antler pendant, Black Forest a woven bark strap with moss, a pine sprig and a
+root knot, Swamp a braid of rope and moss with a skull and bone charms, Mountain a frost-blue strap with a
+fur mantle and fangs, Plains a red and tan plait with a curved tusk, Mistlands shingled carapace plates
+with beads, and Ashlands a black chain with lava studs and cooled spikes. The glow of an upgraded sash is
+on each model's bone parts, so it is the buckle, skull, fangs, tusk, beads or studs that light up. The
+Deep North sash and every relic are unchanged. The models are not checked in game yet.
+
 A Deep North sash, the eighth. The Frozen King drops no trophy, so it takes his Sacrificial Blood as the
 last ingredient beside the six Deep North trophies, through a new `BossItems` setting. Its upgrade is its
 relic and 10 Moose hide. The token and relic models are placeholders until the real art lands.
